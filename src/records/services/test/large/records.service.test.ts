@@ -130,9 +130,9 @@ describe(RecordsService.name, () => {
         },
         {
           books: [
-            {userId: 'user1', bookid: 'book1'},
-            {userId: 'user1', bookid: 'book2'},
-            {userId: 'user1', bookid: 'book3'},
+            {userId: 'user1', bookId: 'book1'},
+            {userId: 'user1', bookId: 'book2'},
+            {userId: 'user1', bookId: 'book3'},
           ],
           hasPrevious: false,
           hasNext: false,
@@ -146,9 +146,9 @@ describe(RecordsService.name, () => {
         },
         {
           books: [
-            {userId: 'user1', bookid: 'book3'},
-            {userId: 'user1', bookid: 'book2'},
-            {userId: 'user1', bookid: 'book1'},
+            {userId: 'user1', bookId: 'book3'},
+            {userId: 'user1', bookId: 'book2'},
+            {userId: 'user1', bookId: 'book1'},
           ],
           hasPrevious: false,
           hasNext: false,
@@ -161,7 +161,7 @@ describe(RecordsService.name, () => {
           orderBy: {title: OrderBy.ASC},
         },
         {
-          books: [{userId: 'user1', bookid: 'book1'}],
+          books: [{userId: 'user1', bookId: 'book1'}],
           hasPrevious: false,
           hasNext: true,
         },
@@ -173,7 +173,7 @@ describe(RecordsService.name, () => {
           orderBy: {title: OrderBy.ASC},
         },
         {
-          books: [{userId: 'user1', bookid: 'book2'}],
+          books: [{userId: 'user1', bookId: 'book2'}],
           hasPrevious: true,
           hasNext: true,
         },
@@ -199,7 +199,7 @@ describe(RecordsService.name, () => {
 
       expect(actual.nodes).toHaveLength(expected.books.length);
       for (const [i, actualNode] of actual.nodes.entries()) {
-        expect(actualNode).toBe(expected.books[i]);
+        expect(actualNode).toStrictEqual(expected.books[i]);
       }
     });
   });
@@ -240,7 +240,26 @@ describe(RecordsService.name, () => {
           orderBy: {readAt: OrderBy.ASC},
         },
         {
-          records: ['record1', 'record2', 'record3'],
+          records: [
+            {
+              id: 'record1',
+              userId: 'user1',
+              bookId: 'book1',
+              readAt: '2020-01-01',
+            },
+            {
+              id: 'record2',
+              userId: 'user1',
+              bookId: 'book2',
+              readAt: '2020-01-02',
+            },
+            {
+              id: 'record3',
+              userId: 'user1',
+              bookId: 'book3',
+              readAt: '2020-01-03',
+            },
+          ],
           hasPrevious: false,
           hasNext: false,
         },
@@ -252,7 +271,26 @@ describe(RecordsService.name, () => {
           orderBy: {readAt: OrderBy.DESC},
         },
         {
-          records: ['record3', 'record2', 'record1'],
+          records: [
+            {
+              id: 'record3',
+              userId: 'user1',
+              bookId: 'book3',
+              readAt: '2020-01-03',
+            },
+            {
+              id: 'record2',
+              userId: 'user1',
+              bookId: 'book2',
+              readAt: '2020-01-02',
+            },
+            {
+              id: 'record1',
+              userId: 'user1',
+              bookId: 'book1',
+              readAt: '2020-01-01',
+            },
+          ],
           hasPrevious: false,
           hasNext: false,
         },
@@ -264,7 +302,14 @@ describe(RecordsService.name, () => {
           orderBy: {readAt: OrderBy.ASC},
         },
         {
-          records: ['record1'],
+          records: [
+            {
+              id: 'record1',
+              userId: 'user1',
+              bookId: 'book1',
+              readAt: '2020-01-01',
+            },
+          ],
           hasPrevious: false,
           hasNext: true,
         },
@@ -276,7 +321,14 @@ describe(RecordsService.name, () => {
           orderBy: {readAt: OrderBy.ASC},
         },
         {
-          records: ['record2'],
+          records: [
+            {
+              id: 'record2',
+              userId: 'user1',
+              bookId: 'book2',
+              readAt: '2020-01-02',
+            },
+          ],
           hasPrevious: true,
           hasNext: true,
         },
@@ -301,8 +353,8 @@ describe(RecordsService.name, () => {
       expect(actual.count).toBe(3);
 
       expect(actual.nodes).toHaveLength(expected.records.length);
-      for (const [i, {id}] of actual.nodes.entries()) {
-        expect(id).toBe(expected.records[i]);
+      for (const [i, actualRecord] of actual.nodes.entries()) {
+        expect(actualRecord).toStrictEqual(expected.records[i]);
       }
     });
   });

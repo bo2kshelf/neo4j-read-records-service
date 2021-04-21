@@ -104,10 +104,10 @@ export class RecordsService {
         `
         MATCH (u:User {id: $userId})
         MATCH (u)-[:RECORDED]->(:Record)-[:RECORD_OF]->(b:Book)
-        WITH DISTINCT b
-        RETURN b.id AS b, u.id AS u
+        WITH DISTINCT b, u
         ORDER BY b.title ${orderBy.title}
         SKIP $skip LIMIT $limit
+        RETURN b.id AS b, u.id AS u
         `,
         {userId, skip: int(skip), limit: int(limit)},
       )
