@@ -3,13 +3,13 @@ import {Test} from '@nestjs/testing';
 import {IDService} from '../../../../common/id/id.service';
 import {OrderBy} from '../../../../common/order-by.enum';
 import {Neo4jTestModule} from '../../../../neo4j/neo4j-test.module';
-import {Neo4jTestService} from '../../../../neo4j/neo4j-test.service';
+import {Neo4jService} from '../../../../neo4j/neo4j.service';
 import {RecordsService} from '../../records.service';
 
 describe(RecordsService.name, () => {
   let app: INestApplication;
 
-  let neo4jService: Neo4jTestService;
+  let neo4jService: Neo4jService;
 
   let recordsService: RecordsService;
 
@@ -22,7 +22,7 @@ describe(RecordsService.name, () => {
     app = module.createNestApplication();
     await app.init();
 
-    neo4jService = module.get<Neo4jTestService>(Neo4jTestService);
+    neo4jService = module.get<Neo4jService>(Neo4jService);
 
     recordsService = module.get<RecordsService>(RecordsService);
   });
