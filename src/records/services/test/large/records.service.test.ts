@@ -3,13 +3,13 @@ import {Test} from '@nestjs/testing';
 import {IDService} from '../../../../common/id/id.service';
 import {OrderBy} from '../../../../common/order-by.enum';
 import {Neo4jTestModule} from '../../../../neo4j/neo4j-test.module';
-import {Neo4jService} from '../../../../neo4j/neo4j.service';
+import {Neo4jTestService} from '../../../../neo4j/neo4j-test.service';
 import {RecordsService} from '../../records.service';
 
 describe(RecordsService.name, () => {
   let app: INestApplication;
 
-  let neo4jService: Neo4jService;
+  let neo4jService: Neo4jTestService;
 
   let recordsService: RecordsService;
 
@@ -22,7 +22,7 @@ describe(RecordsService.name, () => {
     app = module.createNestApplication();
     await app.init();
 
-    neo4jService = module.get<Neo4jService>(Neo4jService);
+    neo4jService = module.get<Neo4jTestService>(Neo4jTestService);
 
     recordsService = module.get<RecordsService>(RecordsService);
   });
@@ -131,150 +131,6 @@ describe(RecordsService.name, () => {
     });
   });
 
-  describe('createRecord()', () => {
-    it('日付のある1回目の追加', async () => {
-      await neo4jService.write(
-        `
-        CREATE (u:User {id:"user1"}), (b:Book {id:"book1"})
-        `,
-      );
-      const actual = await recordsService.createRecord(
-        {userId: 'user1', bookId: 'book1'},
-        {readAt: '2020-01-01'},
-      );
-      expect(actual.id).toStrictEqual(expect.any(String));
-      expect(actual.readAt).toBe('2020-01-01');
-    });
-
-    it('日付のない1回目の追加', async () => {
-      await neo4jService.write(
-        `
-        CREATE (u:User {id:"user1"}), (b:Book {id:"book1"})
-        `,
-      );
-      const actual = await recordsService.createRecord(
-        {userId: 'user1', bookId: 'book1'},
-        {},
-      );
-      expect(actual.id).toStrictEqual(expect.any(String));
-      expect(actual.readAt).toBeNull();
-    });
-
-    it('1回目とは別の日付で2回目を登録すると別のRecordとして扱われる', async () => {
-      await neo4jService.write(
-        `
-        CREATE (u:User {id:"user1"}), (b:Book {id:"book1"})
-        CREATE (u)-[:RECORDED]->(:Record {id: "record1", readAt: "2019-01-01"})-[:RECORD_OF]->(b)
-        `,
-      );
-      const actual = await recordsService.createRecord(
-        {userId: 'user1', bookId: 'book1'},
-        {readAt: '2020-01-01'},
-      );
-      expect(actual.id).not.toBe('record1');
-      expect(actual.id).toStrictEqual(expect.any(String));
-      expect(actual.readAt).toBe('2020-01-01');
-
-      const count = await neo4jService
-        .read(
-          `MATCH p=()-[:RECORDED]->()-[:RECORD_OF]->() RETURN count(p) AS count`,
-        )
-        .then(({records}) => records[0].get('count').toNumber());
-      expect(count).toBe(2);
-    });
-
-    it('1回目と同じ日付で2回目を登録するとid以外を上書きとして扱われる', async () => {
-      await neo4jService.write(
-        `
-        CREATE (u:User {id:"user1"}), (b:Book {id:"book1"})
-        CREATE (u)-[:RECORDED]->(:Record {id: "record1", readAt: "2020-01-01"})-[:RECORD_OF]->(b)
-        `,
-      );
-      const actual = await recordsService.createRecord(
-        {userId: 'user1', bookId: 'book1'},
-        {readAt: '2020-01-01'},
-      );
-      expect(actual.id).toBe('record1');
-      expect(actual.readAt).toBe('2020-01-01');
-
-      const count = await neo4jService
-        .read(
-          `MATCH p=()-[:RECORDED]->()-[:RECORD_OF]->() RETURN count(p) AS count`,
-        )
-        .then(({records}) => records[0].get('count').toNumber());
-      expect(count).toBe(1);
-    });
-
-    it('日付のない記録をした後で日付がある2回目の記録をすると別の記録として扱われる', async () => {
-      await neo4jService.write(
-        `
-        CREATE (u:User {id:"user1"}), (b:Book {id:"book1"})
-        CREATE (u)-[:RECORDED]->(:Record {id: "record1"})-[:RECORD_OF]->(b)
-        `,
-      );
-      const actual = await recordsService.createRecord(
-        {userId: 'user1', bookId: 'book1'},
-        {readAt: '2020-01-01'},
-      );
-      expect(actual.id).not.toBe('record1');
-      expect(actual.id).toStrictEqual(expect.any(String));
-      expect(actual.readAt).toBe('2020-01-01');
-
-      const count = await neo4jService
-        .read(
-          `MATCH p=()-[:RECORDED]->()-[:RECORD_OF]->() RETURN count(p) AS count`,
-        )
-        .then(({records}) => records[0].get('count').toNumber());
-      expect(count).toBe(2);
-    });
-
-    it('日付のない記録をした後で日付がない2回目の記録をすると別の記録として扱われる', async () => {
-      await neo4jService.write(
-        `
-        CREATE (u:User {id:"user1"}), (b:Book {id:"book1"})
-        CREATE (u)-[:RECORDED]->(:Record {id: "record1"})-[:RECORD_OF]->(b)
-        `,
-      );
-      const actual = await recordsService.createRecord(
-        {userId: 'user1', bookId: 'book1'},
-        {},
-      );
-      expect(actual.id).not.toBe('record1');
-      expect(actual.id).toStrictEqual(expect.any(String));
-      expect(actual.readAt).toBeNull();
-
-      const count = await neo4jService
-        .read(
-          `MATCH p=()-[:RECORDED]->()-[:RECORD_OF]->() RETURN count(p) AS count`,
-        )
-        .then(({records}) => records[0].get('count').toNumber());
-      expect(count).toBe(2);
-    });
-
-    it('日付のある記録がある状態で日付がない2回目の記録をすると別の記録として扱われる', async () => {
-      await neo4jService.write(
-        `
-        CREATE (u:User {id:"user1"}), (b:Book {id:"book1"})
-        CREATE (u)-[:RECORDED]->(:Record {id: "record1", readAt: "2020-01-01"})-[:RECORD_OF]->(b)
-        `,
-      );
-      const actual = await recordsService.createRecord(
-        {userId: 'user1', bookId: 'book1'},
-        {},
-      );
-      expect(actual.id).not.toBe('record1');
-      expect(actual.id).toStrictEqual(expect.any(String));
-      expect(actual.readAt).toBeNull();
-
-      const count = await neo4jService
-        .read(
-          `MATCH p=()-[:RECORDED]->()-[:RECORD_OF]->() RETURN count(p) AS count`,
-        )
-        .then(({records}) => records[0].get('count').toNumber());
-      expect(count).toBe(2);
-    });
-  });
-
   describe('getReadBooksFromUser()', () => {
     beforeEach(async () => {
       await neo4jService.write(
@@ -311,7 +167,11 @@ describe(RecordsService.name, () => {
           orderBy: {title: OrderBy.ASC},
         },
         {
-          books: ['book1', 'book2', 'book3'],
+          books: [
+            {userId: 'user1', bookid: 'book1'},
+            {userId: 'user1', bookid: 'book2'},
+            {userId: 'user1', bookid: 'book3'},
+          ],
           hasPrevious: false,
           hasNext: false,
         },
@@ -323,7 +183,11 @@ describe(RecordsService.name, () => {
           orderBy: {title: OrderBy.DESC},
         },
         {
-          books: ['book3', 'book2', 'book1'],
+          books: [
+            {userId: 'user1', bookid: 'book3'},
+            {userId: 'user1', bookid: 'book2'},
+            {userId: 'user1', bookid: 'book1'},
+          ],
           hasPrevious: false,
           hasNext: false,
         },
@@ -335,7 +199,7 @@ describe(RecordsService.name, () => {
           orderBy: {title: OrderBy.ASC},
         },
         {
-          books: ['book1'],
+          books: [{userId: 'user1', bookid: 'book1'}],
           hasPrevious: false,
           hasNext: true,
         },
@@ -347,7 +211,7 @@ describe(RecordsService.name, () => {
           orderBy: {title: OrderBy.ASC},
         },
         {
-          books: ['book2'],
+          books: [{userId: 'user1', bookid: 'book2'}],
           hasPrevious: true,
           hasNext: true,
         },
@@ -372,8 +236,8 @@ describe(RecordsService.name, () => {
       expect(actual.count).toBe(3);
 
       expect(actual.nodes).toHaveLength(expected.books.length);
-      for (const [i, {id}] of actual.nodes.entries()) {
-        expect(id).toBe(expected.books[i]);
+      for (const [i, actualNode] of actual.nodes.entries()) {
+        expect(actualNode).toBe(expected.books[i]);
       }
     });
   });

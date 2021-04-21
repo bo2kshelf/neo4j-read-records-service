@@ -1,17 +1,13 @@
 import {Injectable} from '@nestjs/common';
 import {int} from 'neo4j-driver';
-import {BookEntity} from '../../books/entities/book.entity';
-import {IDService} from '../../common/id/id.service';
 import {OrderBy} from '../../common/order-by.enum';
 import {Neo4jService} from '../../neo4j/neo4j.service';
+import {ReadBookRecordEntity} from '../entities/read-book.entity';
 import {RecordEntity} from '../entities/record.entity';
 
 @Injectable()
 export class RecordsService {
-  constructor(
-    private readonly neo4jService: Neo4jService,
-    private readonly idService: IDService,
-  ) {}
+  constructor(private readonly neo4jService: Neo4jService) {}
 
   async findById(id: string): Promise<RecordEntity> {
     const result = await this.neo4jService.read(
@@ -26,48 +22,6 @@ export class RecordsService {
     return this.neo4jService
       .read(`MATCH (n:Record) RETURN n`)
       .then((res) => res.records.map((record) => record.get(0).properties));
-  }
-
-  async createRecord(
-    {userId, bookId}: {userId: string; bookId: string},
-    {readAt, ...props}: {readAt?: string},
-  ): Promise<RecordEntity> {
-    return readAt
-      ? this.neo4jService
-          .write(
-            `
-          MATCH (u:User {id: $userId}), (b:Book {id: $bookId})
-          MERGE (u)-[:RECORDED]->(rec:Record {readAt: $readAt})-[:RECORD_OF]->(b)
-          ON CREATE SET rec.id = $id
-          SET rec += $props
-          RETURN rec.id AS id, rec.readAt AS readAt
-          `,
-            {
-              userId,
-              bookId,
-              id: this.idService.generate(),
-              readAt,
-              props,
-            },
-          )
-          .then(({records}) => ({
-            id: records[0].get('id'),
-            readAt: records[0].get('readAt'),
-          }))
-      : this.neo4jService
-          .write(
-            `
-            MATCH (u:User {id: $userId}), (b:Book {id: $bookId})
-            CREATE (u)-[:RECORDED]->(rec:Record {id: $id})-[:RECORD_OF]->(b)
-            SET rec += $props
-            RETURN rec.id AS id
-            `,
-            {userId, bookId, id: this.idService.generate(), props},
-          )
-          .then(({records}) => ({
-            id: records[0].get('id'),
-            readAt: null,
-          }));
   }
 
   async getUserIdByRecord(recordId: string): Promise<string> {
@@ -158,22 +112,26 @@ export class RecordsService {
     count: number;
     hasNext: boolean;
     hasPrevious: boolean;
-    nodes: BookEntity[];
+    nodes: ReadBookRecordEntity[];
   }> {
-    const nodes: BookEntity[] = await this.neo4jService
+    const nodes: ReadBookRecordEntity[] = await this.neo4jService
       .read(
         `
         MATCH (u:User {id: $userId})
         MATCH (u)-[:RECORDED]->(:Record)-[:RECORD_OF]->(b:Book)
-        RETURN DISTINCT b
+        WITH DISTINCT b
+        RETURN b.id AS b, u.id AS u
         ORDER BY b.title ${orderBy.title}
         SKIP $skip LIMIT $limit
         `,
         {userId, skip: int(skip), limit: int(limit)},
       )
-      .then((result) => {
-        return result.records.map((record) => record.get('b').properties);
-      });
+      .then((result) =>
+        result.records.map((record) => ({
+          userId: record.get('u'),
+          bookId: record.get('b'),
+        })),
+      );
     const meta: {
       count: number;
       hasNext: boolean;
