@@ -20,14 +20,12 @@ export class RecordResolver {
   }
 
   @ResolveField(() => UserEntity)
-  async user(@Parent() {id}: RecordEntity): Promise<UserEntity> {
-    const userId = await this.recordsService.getUserIdByRecord(id);
-    return this.usersService.findById(userId);
+  async user(@Parent() {userId}: RecordEntity): Promise<UserEntity> {
+    return {id: userId};
   }
 
   @ResolveField(() => BookEntity)
-  async book(@Parent() {id}: RecordEntity): Promise<BookEntity> {
-    const bookId = await this.recordsService.getBookIdByRecord(id);
+  async book(@Parent() {bookId}: RecordEntity): Promise<BookEntity> {
     return {id: bookId};
   }
 }

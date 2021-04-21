@@ -11,7 +11,7 @@ export class ReadingBookRecordResolver {
 
   @ResolveField(() => UserEntity)
   async user(@Parent() {userId}: ReadingBookRecordEntity): Promise<UserEntity> {
-    return this.usersService.findById(userId);
+    return {id: userId};
   }
 
   @ResolveField(() => BookEntity)

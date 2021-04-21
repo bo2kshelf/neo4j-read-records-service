@@ -5,21 +5,11 @@ import {Neo4jService} from '../../neo4j/neo4j.service';
 import {HaveBookRecordEntity} from '../entities/have-book-record.entity';
 import {ReadingBookRecordEntity} from '../entities/reading-book-record.entity';
 import {StackedBookRecordEntity} from '../entities/stacked-book-record.entity';
-import {UserEntity} from '../entities/users.entity';
 import {WishReadBookRecordEntity} from '../entities/wish-read-book-record.entity';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly neo4jService: Neo4jService) {}
-
-  async findById(id: string): Promise<UserEntity> {
-    const result = await this.neo4jService.read(
-      `MATCH (n:User {id: $id}) RETURN n`,
-      {id},
-    );
-    if (result.records.length === 0) throw new Error('Not Found');
-    return result.records[0].get(0).properties;
-  }
 
   async getHaveBooks(
     userId: string,

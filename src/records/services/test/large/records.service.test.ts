@@ -93,44 +93,6 @@ describe(RecordsService.name, () => {
     });
   });
 
-  describe('getUserIdByRecord()', () => {
-    it('record idからuser idを取得', async () => {
-      await neo4jService.write(
-        `
-        CREATE (u:User {id:"user1"}), (b:Book {id:"book1"})
-        CREATE (u)-[:RECORDED]->(:Record {id: "record1"})-[:RECORD_OF]->(b)
-        `,
-      );
-      const actual = await recordsService.getUserIdByRecord('record1');
-      expect(actual).toBe('user1');
-    });
-
-    it('存在しないIDについて取得しようとすると例外を投げる', async () => {
-      await expect(() =>
-        recordsService.getUserIdByRecord('record2'),
-      ).rejects.toThrow(/Not Found/);
-    });
-  });
-
-  describe('getBookIdByRecord()', () => {
-    it('record book idを取得', async () => {
-      await neo4jService.write(
-        `
-        CREATE (u:User {id:"user1"}), (b:Book {id:"book1"})
-        CREATE (u)-[:RECORDED]->(:Record {id: "record1"})-[:RECORD_OF]->(b)
-        `,
-      );
-      const actual = await recordsService.getBookIdByRecord('record1');
-      expect(actual).toBe('book1');
-    });
-
-    it('存在しないIDについて取得しようとすると例外を投げる', async () => {
-      await expect(() =>
-        recordsService.getBookIdByRecord('record2'),
-      ).rejects.toThrow(/Not Found/);
-    });
-  });
-
   describe('getReadBooksFromUser()', () => {
     beforeEach(async () => {
       await neo4jService.write(

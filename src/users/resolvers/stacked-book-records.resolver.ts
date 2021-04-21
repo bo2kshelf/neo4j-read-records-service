@@ -10,7 +10,7 @@ export class StackedBookRecordResolver {
 
   @ResolveField(() => UserEntity)
   async user(@Parent() {userId}: StackedBookRecordEntity): Promise<UserEntity> {
-    return this.usersService.findById(userId);
+    return {id: userId};
   }
 
   @ResolveField(() => BookEntity)

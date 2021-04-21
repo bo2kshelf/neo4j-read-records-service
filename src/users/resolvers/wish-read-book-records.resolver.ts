@@ -12,7 +12,7 @@ export class WishReadBookRecordResolver {
   async user(
     @Parent() {userId}: WishReadBookRecordEntity,
   ): Promise<UserEntity> {
-    return this.usersService.findById(userId);
+    return {id: userId};
   }
 
   @ResolveField(() => BookEntity)

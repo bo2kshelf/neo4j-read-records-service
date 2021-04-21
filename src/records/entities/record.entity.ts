@@ -6,6 +6,9 @@ export class RecordEntity {
   @Field(() => ID)
   id!: string;
 
+  userId!: string;
+  bookId!: string;
+
   @Field(() => LocalDateResolver, {nullable: true})
   readAt?: string;
 }

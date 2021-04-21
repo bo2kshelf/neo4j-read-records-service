@@ -24,24 +24,6 @@ export class RecordsService {
       .then((res) => res.records.map((record) => record.get(0).properties));
   }
 
-  async getUserIdByRecord(recordId: string): Promise<string> {
-    const result = await this.neo4jService.read(
-      `MATCH (u:User)-[:RECORDED]->(:Record {id: $recordId}) RETURN u.id AS id`,
-      {recordId},
-    );
-    if (result.records.length === 0) throw new Error('Not Found');
-    return result.records[0].get('id');
-  }
-
-  async getBookIdByRecord(recordId: string): Promise<string> {
-    const result = await this.neo4jService.read(
-      `MATCH (:Record {id: $recordId})-[:RECORD_OF]->(b:Book) RETURN b.id AS id`,
-      {recordId},
-    );
-    if (result.records.length === 0) throw new Error('Not Found');
-    return result.records[0].get('id');
-  }
-
   async getRecordsFromUser(
     userId: string,
     {
@@ -69,7 +51,8 @@ export class RecordsService {
           WHERE r.readAt IS NULL
           RETURN r
       }
-      RETURN r.id AS id, toString(r.readAt) AS readAt
+      MATCH (u)-[:RECORDED]->(r)-[:RECORD_OF]->(b:Book)
+      RETURN r.id AS id, u.id AS u, b.id AS b, toString(r.readAt) AS readAt
       SKIP $skip LIMIT $limit
     `,
         {userId, skip: int(skip), limit: int(limit)},
@@ -77,6 +60,8 @@ export class RecordsService {
       .then((result) =>
         result.records.map((record) => ({
           id: record.get('id'),
+          bookId: record.get('b'),
+          userId: record.get('u'),
           readAt: record.get('readAt'),
         })),
       );
