@@ -40,28 +40,6 @@ describe(UsersService.name, () => {
     expect(usersService).toBeDefined();
   });
 
-  describe('findById()', () => {
-    const expected = {id: '1'};
-
-    beforeEach(async () => {
-      await neo4jService.write(`CREATE (p:User) SET p=$expected RETURN p`, {
-        expected,
-      });
-    });
-
-    it('存在しないIDについて取得しようとすると例外を投げる', async () => {
-      await expect(() => usersService.findById('2')).rejects.toThrow(
-        /Not Found/,
-      );
-    });
-
-    it('指定したIDが存在するなら取得できる', async () => {
-      const actual = await usersService.findById(expected.id);
-
-      expect(actual.id).toBe(expected.id);
-    });
-  });
-
   describe('getHaveBooks()', () => {
     describe('一般的な場合', () => {
       const expectedUser = {id: 'user1'};
