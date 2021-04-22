@@ -5,21 +5,11 @@ import {Neo4jService} from '../../neo4j/neo4j.service';
 import {HaveBookRecordEntity} from '../entities/have-book-record.entity';
 import {ReadingBookRecordEntity} from '../entities/reading-book-record.entity';
 import {StackedBookRecordEntity} from '../entities/stacked-book-record.entity';
-import {UserEntity} from '../entities/users.entity';
 import {WishReadBookRecordEntity} from '../entities/wish-read-book-record.entity';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly neo4jService: Neo4jService) {}
-
-  async findById(id: string): Promise<UserEntity> {
-    const result = await this.neo4jService.read(
-      `MATCH (n:User {id: $id}) RETURN n`,
-      {id},
-    );
-    if (result.records.length === 0) throw new Error('Not Found');
-    return result.records[0].get(0).properties;
-  }
 
   async getHaveBooks(
     userId: string,
@@ -232,125 +222,5 @@ export class UsersService {
         hasPrevious: result.records[0].get('previous'),
       }));
     return {nodes: records, ...meta};
-  }
-
-  async setHaveBook(
-    {bookId, userId}: {bookId: string; userId: string},
-    {have}: {have: boolean},
-  ): Promise<HaveBookRecordEntity> {
-    return have
-      ? this.neo4jService
-          .read(
-            `
-            MATCH (b:Book {id: $bookId})
-            MERGE (u:User {id: $userId})
-            MERGE (u)-[r:HAS_BOOK]->(b)
-            SET r.updatedAt = datetime.realtime()
-            RETURN u.id AS u, b.id AS b, r.updatedAt AS updatedAt
-            `,
-            {userId, bookId},
-          )
-          .then((result) => ({
-            userId: result.records[0].get('u'),
-            bookId: result.records[0].get('b'),
-            have: true,
-            updatedAt: new Date(result.records[0].get('updatedAt')),
-          }))
-      : this.neo4jService
-          .read(
-            `
-            MERGE (u:User {id: $userId}) WITH u
-            MATCH (b:Book {id: $bookId})
-            OPTIONAL MATCH (u)-[r:HAS_BOOK]->(b) DELETE r
-            RETURN u.id AS u, b.id AS b, datetime.realtime() AS updatedAt
-            `,
-            {userId, bookId},
-          )
-          .then((result) => ({
-            userId: result.records[0].get('u'),
-            bookId: result.records[0].get('b'),
-            have: false,
-            updatedAt: new Date(result.records[0].get('updatedAt')),
-          }));
-  }
-
-  async setReadingBook(
-    {bookId, userId}: {bookId: string; userId: string},
-    {reading}: {reading: boolean},
-  ): Promise<ReadingBookRecordEntity> {
-    return reading
-      ? this.neo4jService
-          .read(
-            `
-            MATCH (b:Book {id: $bookId})
-            MERGE (u:User {id: $userId})
-            MERGE (u)-[r:IS_READING_BOOK]->(b)
-            SET r.updatedAt = datetime.realtime()
-            RETURN u.id AS u, b.id AS b, r.reading AS reading, r.updatedAt AS updatedAt
-            `,
-            {userId, bookId},
-          )
-          .then((result) => ({
-            userId: result.records[0].get('u'),
-            bookId: result.records[0].get('b'),
-            reading: true,
-            updatedAt: new Date(result.records[0].get('updatedAt')),
-          }))
-      : this.neo4jService
-          .read(
-            `
-            MERGE (u:User {id: $userId}) WITH u
-            MATCH (b:Book {id: $bookId})
-            OPTIONAL MATCH (u)-[r:IS_READING_BOOK]->(b) DELETE r
-            RETURN u.id AS u, b.id AS b, datetime.realtime() AS updatedAt
-            `,
-            {userId, bookId},
-          )
-          .then((result) => ({
-            userId: result.records[0].get('u'),
-            bookId: result.records[0].get('b'),
-            reading: false,
-            updatedAt: new Date(result.records[0].get('updatedAt')),
-          }));
-  }
-
-  async setWishReadBook(
-    {bookId, userId}: {bookId: string; userId: string},
-    {wish}: {wish: boolean},
-  ): Promise<WishReadBookRecordEntity> {
-    return wish
-      ? this.neo4jService
-          .read(
-            `
-            MATCH (b:Book {id: $bookId})
-            MERGE (u:User {id: $userId})
-            MERGE (u)-[r:WISHES_TO_READ_BOOK]->(b)
-            SET r.updatedAt = datetime.realtime()
-            RETURN u.id AS u, b.id AS b, r.reading AS reading, r.updatedAt AS updatedAt
-            `,
-            {userId, bookId},
-          )
-          .then((result) => ({
-            userId: result.records[0].get('u'),
-            bookId: result.records[0].get('b'),
-            wish: true,
-            updatedAt: new Date(result.records[0].get('updatedAt')),
-          }))
-      : this.neo4jService
-          .read(
-            `
-            MERGE (u:User {id: $userId}) WITH u
-            MATCH (b:Book {id: $bookId})
-            OPTIONAL MATCH (u)-[r:WISHES_TO_READ_BOOK]->(b) DELETE r
-            RETURN u.id AS u, b.id AS b, datetime.realtime() AS updatedAt
-            `,
-            {userId, bookId},
-          )
-          .then((result) => ({
-            userId: result.records[0].get('u'),
-            bookId: result.records[0].get('b'),
-            wish: false,
-            updatedAt: new Date(result.records[0].get('updatedAt')),
-          }));
   }
 }
