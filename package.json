@@ -1,5 +1,5 @@
 {
-  "name": "@bo2kshelf/neo4j-read-records-service",
+  "name": "@bo2kshelf/read-records-service",
   "private": true,
   "scripts": {
     "build": "nest build",
