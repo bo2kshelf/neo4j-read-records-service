@@ -188,7 +188,7 @@ export class UsersService {
         `
         MATCH (u:User {id: $userId})
         MATCH p = (u)-[r:HAS_BOOK]->(b)
-        WHERE NOT EXISTS ((u)-[:READ_BOOK]->(b))
+        WHERE NOT EXISTS ((u)-[:RECORDED]->(:Record)-[:RECORD_OF]->(b))
         RETURN u,b
         ORDER BY r.updatedAt ${orderBy.updatedAt}
         SKIP $skip LIMIT $limit
@@ -210,7 +210,7 @@ export class UsersService {
         `
         MATCH (u:User {id: $userId})
         MATCH p = (u)-[:HAS_BOOK]->(b)
-        WHERE NOT EXISTS ((u)-[:READ_BOOK]->(b))
+        WHERE NOT EXISTS ((u)-[:RECORDED]->(:Record)-[:RECORD_OF]->(b))
         WITH count(p) AS count
         RETURN count, 0 < count AND 0 < $skip AS previous, $skip + $limit < count AS next
         `,
