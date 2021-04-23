@@ -651,9 +651,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bo2kshelf/neo4j-read-records-service@workspace:.":
+"@bo2kshelf/prettier-config@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@bo2kshelf/prettier-config@npm:1.0.0"
+  dependencies:
+    "@shopify/prettier-config": ^1.1.2
+  peerDependencies:
+    prettier: 2
+  checksum: be56def4bc5ab247dd6d663d184b268e05576bc6a5bad5e5a141f9b3252e269bdd819eb0e1bd8ab07e92972b00f8a0aa6496c602f297aa4902e295fc6e071638
+  languageName: node
+  linkType: hard
+
+"@bo2kshelf/read-records-service@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@bo2kshelf/neo4j-read-records-service@workspace:."
+  resolution: "@bo2kshelf/read-records-service@workspace:."
   dependencies:
     "@arkweid/lefthook": ^0.7.2
     "@bo2kshelf/eslint-config": ^1.1.1
@@ -680,7 +691,6 @@ __metadata:
     graphql-scalars: ^1.9.0
     jest: ^26.6.3
     jest-junit: ^12.0.0
-    nanoid: ^3.1.22
     neo4j-driver: ^4.2.3
     npm-run-all: ^4.1.5
     prettier: ^2.2.1
@@ -696,17 +706,6 @@ __metadata:
     typescript: ^4.2.4
   languageName: unknown
   linkType: soft
-
-"@bo2kshelf/prettier-config@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@bo2kshelf/prettier-config@npm:1.0.0"
-  dependencies:
-    "@shopify/prettier-config": ^1.1.2
-  peerDependencies:
-    prettier: 2
-  checksum: be56def4bc5ab247dd6d663d184b268e05576bc6a5bad5e5a141f9b3252e269bdd819eb0e1bd8ab07e92972b00f8a0aa6496c602f297aa4902e295fc6e071638
-  languageName: node
-  linkType: hard
 
 "@cnakazawa/watch@npm:^1.0.3":
   version: 1.0.4
@@ -8449,15 +8448,6 @@ __metadata:
   version: 0.0.8
   resolution: "mute-stream@npm:0.0.8"
   checksum: 315c40f463ec31deee54c5b8779207feb6b63dd4c58fe0f84ad46abdd6dac1ada578d53efde4a47b0ae4d29d453d35bb39ecdd98ee9ebf538929039a3a9945df
-  languageName: node
-  linkType: hard
-
-"nanoid@npm:^3.1.22":
-  version: 3.1.22
-  resolution: "nanoid@npm:3.1.22"
-  bin:
-    nanoid: bin/nanoid.cjs
-  checksum: 6a38c799816de388cd67233a9fad6216e0ad2abda3ce5b34eb126afbef6905924507223dc65797e2bcbc513f9cd7e078ea7e69448d59f434a6206b491278ae24
   languageName: node
   linkType: hard
 
