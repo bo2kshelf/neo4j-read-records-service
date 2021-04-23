@@ -1,6 +1,5 @@
 import {INestApplication} from '@nestjs/common';
 import {Test} from '@nestjs/testing';
-import {IDService} from '../../../../common/id/id.service';
 import {OrderBy} from '../../../../common/order-by.enum';
 import {Neo4jTestModule} from '../../../../neo4j/neo4j-test.module';
 import {Neo4jService} from '../../../../neo4j/neo4j.service';
@@ -16,14 +15,13 @@ describe(RecordsService.name, () => {
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       imports: [Neo4jTestModule],
-      providers: [IDService, RecordsService],
+      providers: [RecordsService],
     }).compile();
 
     app = module.createNestApplication();
     await app.init();
 
     neo4jService = module.get<Neo4jService>(Neo4jService);
-
     recordsService = module.get<RecordsService>(RecordsService);
   });
 
