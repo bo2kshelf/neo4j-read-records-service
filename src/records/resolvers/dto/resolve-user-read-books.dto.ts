@@ -2,29 +2,29 @@ import {ArgsType, Field, InputType, Int, ObjectType} from '@nestjs/graphql';
 import {OrderBy} from '../../../common/order-by.enum';
 import {ReadBookRecordEntity} from '../../entities/read-book.entity';
 
-@InputType('UsersReadBooksArgsOrderBy')
-export class ResolveUsersReadBooksArgsOrderBy {
+@InputType()
+export class UserReadBooksArgsOrderBy {
   @Field(() => OrderBy, {nullable: true, defaultValue: OrderBy.ASC})
   title!: OrderBy;
 }
 
 @ArgsType()
-export class ResolveUsersReadBooksArgs {
+export class UserReadBooksArgs {
   @Field(() => Int, {nullable: true, defaultValue: 0})
   skip!: number;
 
   @Field(() => Int, {nullable: true, defaultValue: 0})
   limit!: number;
 
-  @Field(() => ResolveUsersReadBooksArgsOrderBy, {
+  @Field(() => UserReadBooksArgsOrderBy, {
     nullable: true,
-    defaultValue: new ResolveUsersReadBooksArgsOrderBy(),
+    defaultValue: new UserReadBooksArgsOrderBy(),
   })
-  orderBy!: ResolveUsersReadBooksArgsOrderBy;
+  orderBy!: UserReadBooksArgsOrderBy;
 }
 
-@ObjectType('UsersReadBooksReturn')
-export class ResolveUsersReadBooksReturnEntity {
+@ObjectType()
+export class UserReadBooksReturnType {
   @Field(() => [ReadBookRecordEntity])
   nodes!: ReadBookRecordEntity[];
 

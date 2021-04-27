@@ -13,7 +13,7 @@ export class RecordResolver {
   ) {}
 
   @Query(() => RecordEntity)
-  async recordById(
+  async record(
     @Args('id', {type: () => ID}) id: string,
   ): Promise<RecordEntity> {
     return this.recordsService.findById(id);
