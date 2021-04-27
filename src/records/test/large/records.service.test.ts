@@ -39,24 +39,30 @@ describe(RecordsService.name, () => {
   });
 
   describe('findById()', () => {
-    const expected = {id: '1'};
-
-    beforeEach(async () => {
-      await neo4jService.write(`CREATE (r:Record) SET r=$expected RETURN r`, {
-        expected,
-      });
-    });
-
     it('存在しないIDについて取得しようとすると例外を投げる', async () => {
-      await expect(() => recordsService.findById('2')).rejects.toThrow(
+      await expect(() => recordsService.findById('1')).rejects.toThrow(
         /Not Found/,
       );
     });
 
     it('指定したIDが存在するなら取得できる', async () => {
-      const actual = await recordsService.findById(expected.id);
+      await neo4jService.write(
+        `
+        CREATE (u:User {id: "user1"}), (b:Book {id: "book1"})
+        CREATE (r:Record {id: "record1", readAt: "2020-01-01"})
+        CREATE (u)-[:RECORDED]->(r)-[:RECORD_OF]->(b)
+        RETURN *
+        `,
+      );
 
-      expect(actual.id).toBe(expected.id);
+      const actual = await recordsService.findById('record1');
+
+      expect(actual).toStrictEqual({
+        id: 'record1',
+        readAt: '2020-01-01',
+        userId: 'user1',
+        bookId: 'book1',
+      });
     });
   });
 
