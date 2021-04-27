@@ -1,6 +1,6 @@
 import {ArgsType, Field, InputType, Int, ObjectType} from '@nestjs/graphql';
-import {OrderBy} from '../../../common/order-by.enum';
-import {WishBookRecordEntity} from '../../wish-book.entity';
+import {OrderBy} from '../../common/order-by.enum';
+import {WishBookRecordEntity} from '../wish-book.entity';
 
 @InputType()
 export class UserWishBooksArgsOrderBy {

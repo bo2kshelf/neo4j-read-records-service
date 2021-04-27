@@ -1,32 +1,32 @@
 import {ArgsType, Field, InputType, Int, ObjectType} from '@nestjs/graphql';
-import {OrderBy} from '../../../common/order-by.enum';
-import {WishBookRecordEntity} from '../../wish-book.entity';
+import {OrderBy} from '../../common/order-by.enum';
+import {RecordEntity} from '../record.entity';
 
 @InputType()
-export class UserWishBooksArgsOrderBy {
+export class UserRecordsArgsOrderBy {
   @Field(() => OrderBy, {nullable: true, defaultValue: OrderBy.DESC})
-  updatedAt!: OrderBy;
+  readAt!: OrderBy;
 }
 
 @ArgsType()
-export class UserWishBooksArgs {
+export class UserRecordsArgs {
   @Field(() => Int, {nullable: true, defaultValue: 0})
   skip!: number;
 
   @Field(() => Int, {nullable: true, defaultValue: 0})
   limit!: number;
 
-  @Field(() => UserWishBooksArgsOrderBy, {
+  @Field(() => UserRecordsArgsOrderBy, {
     nullable: true,
-    defaultValue: new UserWishBooksArgsOrderBy(),
+    defaultValue: new UserRecordsArgsOrderBy(),
   })
-  orderBy!: UserWishBooksArgsOrderBy;
+  orderBy!: UserRecordsArgsOrderBy;
 }
 
 @ObjectType()
-export class UserWishBooksReturnType {
-  @Field(() => [WishBookRecordEntity])
-  nodes!: WishBookRecordEntity[];
+export class UserRecordsReturnType {
+  @Field(() => [RecordEntity])
+  nodes!: RecordEntity[];
 
   @Field(() => Int)
   count!: number;

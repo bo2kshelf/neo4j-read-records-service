@@ -1,11 +1,11 @@
 import {Module} from '@nestjs/common';
-import {UsersResolver} from './resolvers/users.resolver';
-import {WishBookRecordsResolver} from './resolvers/wish-book-records.resolver';
-import {UsersService} from './services/users.service';
+import {UsersResolver} from './users.resolver';
+import {WishBooksResolver} from './wish-books.resolver';
+import {WishBooksService} from './wish-books.service';
 
 @Module({
   imports: [],
-  providers: [UsersService, UsersResolver, WishBookRecordsResolver],
-  exports: [UsersService],
+  providers: [WishBooksService, UsersResolver, WishBooksResolver],
+  exports: [WishBooksService],
 })
 export class WishBooksModule {}

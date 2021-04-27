@@ -1,11 +1,11 @@
 import {Module} from '@nestjs/common';
-import {StackedBookRecordsResolver} from './resolvers/stacked-book-records.resolver';
-import {UsersResolver} from './resolvers/users.resolver';
-import {UsersService} from './services/users.service';
+import {StackedBooksResolver} from './stacked-books.resolver';
+import {StackedBooksService} from './stacked-books.service';
+import {UsersResolver} from './users.resolver';
 
 @Module({
   imports: [],
-  providers: [UsersService, UsersResolver, StackedBookRecordsResolver],
-  exports: [UsersService],
+  providers: [StackedBooksService, UsersResolver, StackedBooksResolver],
+  exports: [StackedBooksService],
 })
 export class StackedBooksModule {}
