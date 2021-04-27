@@ -8,13 +8,6 @@ import {RecordsService} from '../services/records.service';
 export class RecordResolver {
   constructor(private readonly recordsService: RecordsService) {}
 
-  @Query(() => RecordEntity)
-  async record(
-    @Args('id', {type: () => ID}) id: string,
-  ): Promise<RecordEntity> {
-    return this.recordsService.findById(id);
-  }
-
   @ResolveField(() => UserEntity)
   async user(@Parent() {userId}: RecordEntity): Promise<UserEntity> {
     return {id: userId};
@@ -23,5 +16,12 @@ export class RecordResolver {
   @ResolveField(() => BookEntity)
   async book(@Parent() {bookId}: RecordEntity): Promise<BookEntity> {
     return {id: bookId};
+  }
+
+  @Query(() => RecordEntity)
+  async record(
+    @Args('id', {type: () => ID}) id: string,
+  ): Promise<RecordEntity> {
+    return this.recordsService.findById(id);
   }
 }

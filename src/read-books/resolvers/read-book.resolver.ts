@@ -4,7 +4,7 @@ import {UserEntity} from '../../users/entities/users.entity';
 import {ReadBookRecordEntity} from '../entities/read-book.entity';
 
 @Resolver(() => ReadBookRecordEntity)
-export class ReadBookRecordResolver {
+export class ReadBookRecordsResolver {
   constructor() {}
 
   @ResolveField(() => UserEntity)
