@@ -1,7 +1,7 @@
 import {Field, GraphQLISODateTime, ObjectType} from '@nestjs/graphql';
 
-@ObjectType('ReadingBookRecord')
-export class ReadingBookRecordEntity {
+@ObjectType('ReadingBook')
+export class ReadingBookEntity {
   userId!: string;
   bookId!: string;
 

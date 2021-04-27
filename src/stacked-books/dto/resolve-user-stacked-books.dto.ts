@@ -1,6 +1,6 @@
 import {ArgsType, Field, InputType, Int, ObjectType} from '@nestjs/graphql';
 import {OrderBy} from '../../common/order-by.enum';
-import {StackedBookRecordEntity} from '../stacked-book.entity';
+import {StackedBookEntity} from '../stacked-book.entity';
 
 @InputType()
 export class UserStackedBooksArgsOrderBy {
@@ -25,8 +25,8 @@ export class UserStackedBooksArgs {
 
 @ObjectType()
 export class UserStackedBooksReturnType {
-  @Field(() => [StackedBookRecordEntity])
-  nodes!: StackedBookRecordEntity[];
+  @Field(() => [StackedBookEntity])
+  nodes!: StackedBookEntity[];
 
   @Field(() => Int)
   count!: number;

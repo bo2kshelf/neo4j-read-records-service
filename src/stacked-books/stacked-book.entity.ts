@@ -1,7 +1,7 @@
 import {ObjectType} from '@nestjs/graphql';
 
-@ObjectType('StackedBookRecord')
-export class StackedBookRecordEntity {
+@ObjectType('StackedBook')
+export class StackedBookEntity {
   userId!: string;
   bookId!: string;
 }

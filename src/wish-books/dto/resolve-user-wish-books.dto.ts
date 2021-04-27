@@ -1,6 +1,6 @@
 import {ArgsType, Field, InputType, Int, ObjectType} from '@nestjs/graphql';
 import {OrderBy} from '../../common/order-by.enum';
-import {WishBookRecordEntity} from '../wish-book.entity';
+import {WishBookEntity} from '../wish-book.entity';
 
 @InputType()
 export class UserWishBooksArgsOrderBy {
@@ -25,8 +25,8 @@ export class UserWishBooksArgs {
 
 @ObjectType()
 export class UserWishBooksReturnType {
-  @Field(() => [WishBookRecordEntity])
-  nodes!: WishBookRecordEntity[];
+  @Field(() => [WishBookEntity])
+  nodes!: WishBookEntity[];
 
   @Field(() => Int)
   count!: number;

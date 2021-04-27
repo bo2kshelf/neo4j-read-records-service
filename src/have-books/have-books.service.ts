@@ -2,7 +2,7 @@ import {Injectable} from '@nestjs/common';
 import {int} from 'neo4j-driver';
 import {OrderBy} from '../common/order-by.enum';
 import {Neo4jService} from '../neo4j/neo4j.service';
-import {HaveBookRecordEntity} from './have-book.entity';
+import {HaveBookEntity} from './have-book.entity';
 
 @Injectable()
 export class HaveBooksService {
@@ -19,9 +19,9 @@ export class HaveBooksService {
     count: number;
     hasNext: boolean;
     hasPrevious: boolean;
-    nodes: HaveBookRecordEntity[];
+    nodes: HaveBookEntity[];
   }> {
-    const records: HaveBookRecordEntity[] = await this.neo4jService
+    const records: HaveBookEntity[] = await this.neo4jService
       .read(
         `
         MATCH (u:User {id: $userId})
