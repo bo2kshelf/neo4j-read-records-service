@@ -2,59 +2,59 @@ import {Args, Parent, ResolveField, Resolver} from '@nestjs/graphql';
 import {UserEntity} from '../entities/users.entity';
 import {UsersService} from '../services/users.service';
 import {
-  ResolveUsersHasBooksArgs,
-  ResolveUsersHasBooksReturnEntity,
-} from './dto/resolve-users-has-books.dto';
+  UserHaveBooksArgs,
+  UserHaveBooksReturnType,
+} from './dto/resolve-user-have-books.dto';
 import {
-  ResolveUsersReadingBooksArgs,
-  ResolveUsersReadingBooksReturnEntity,
-} from './dto/resolve-users-reading-books.dto';
+  UserReadingBooksArgs,
+  UserReadingBooksReturnType,
+} from './dto/resolve-user-reading-books.dto';
 import {
-  ResolveUsersStackedBooksArgs,
-  ResolveUsersStackedBooksReturnEntity,
-} from './dto/resolve-users-stacked-books.dto';
+  UserStackedBooksArgs,
+  UserStackedBooksReturnType,
+} from './dto/resolve-user-stacked-books.dto';
 import {
-  ResolveUsersWishesReadBooksArgs,
-  ResolveUsersWishesReadBooksReturnEntity,
-} from './dto/resolve-users-wishes-read-books.dto';
+  UserWishBooksArgs,
+  UserWishBooksReturnType,
+} from './dto/resolve-user-wish-books.dto';
 
 @Resolver(() => UserEntity)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
-  @ResolveField(() => ResolveUsersReadingBooksReturnEntity)
+  @ResolveField(() => UserReadingBooksReturnType)
   async readingBooks(
     @Parent() {id: userId}: UserEntity,
-    @Args({type: () => ResolveUsersReadingBooksArgs})
-    args: ResolveUsersReadingBooksArgs,
-  ): Promise<ResolveUsersReadingBooksReturnEntity> {
+    @Args({type: () => UserReadingBooksArgs})
+    args: UserReadingBooksArgs,
+  ): Promise<UserReadingBooksReturnType> {
     return this.usersService.getReadingBooks(userId, args);
   }
 
-  @ResolveField(() => ResolveUsersHasBooksReturnEntity)
-  async hasBooks(
+  @ResolveField(() => UserHaveBooksReturnType)
+  async haveBooks(
     @Parent() {id: userId}: UserEntity,
-    @Args({type: () => ResolveUsersHasBooksArgs})
-    args: ResolveUsersHasBooksArgs,
-  ): Promise<ResolveUsersHasBooksReturnEntity> {
+    @Args({type: () => UserHaveBooksArgs})
+    args: UserHaveBooksArgs,
+  ): Promise<UserHaveBooksReturnType> {
     return this.usersService.getHaveBooks(userId, args);
   }
 
-  @ResolveField(() => ResolveUsersWishesReadBooksReturnEntity)
-  async wishesReadBooks(
+  @ResolveField(() => UserWishBooksReturnType)
+  async wishBooks(
     @Parent() {id: userId}: UserEntity,
-    @Args({type: () => ResolveUsersWishesReadBooksArgs})
-    args: ResolveUsersWishesReadBooksArgs,
-  ): Promise<ResolveUsersWishesReadBooksReturnEntity> {
+    @Args({type: () => UserWishBooksArgs})
+    args: UserWishBooksArgs,
+  ): Promise<UserWishBooksReturnType> {
     return this.usersService.getWishesToReadBook(userId, args);
   }
 
-  @ResolveField(() => ResolveUsersStackedBooksReturnEntity)
+  @ResolveField(() => UserStackedBooksReturnType)
   async stackedBooks(
     @Parent() {id: userId}: UserEntity,
-    @Args({type: () => ResolveUsersStackedBooksArgs})
-    args: ResolveUsersStackedBooksArgs,
-  ): Promise<ResolveUsersStackedBooksReturnEntity> {
+    @Args({type: () => UserStackedBooksArgs})
+    args: UserStackedBooksArgs,
+  ): Promise<UserStackedBooksReturnType> {
     return this.usersService.getStackedBooks(userId, args);
   }
 }

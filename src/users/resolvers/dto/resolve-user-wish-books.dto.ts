@@ -1,32 +1,32 @@
 import {ArgsType, Field, InputType, Int, ObjectType} from '@nestjs/graphql';
 import {OrderBy} from '../../../common/order-by.enum';
-import {RecordEntity} from '../../entities/record.entity';
+import {WishBookRecordEntity} from '../../entities/wish-read-book-record.entity';
 
-@InputType('UsersRecordsArgsOrderBy')
-export class ResolveUsersRecordsArgsOrderBy {
+@InputType()
+export class UserWishBooksArgsOrderBy {
   @Field(() => OrderBy, {nullable: true, defaultValue: OrderBy.DESC})
-  readAt!: OrderBy;
+  updatedAt!: OrderBy;
 }
 
 @ArgsType()
-export class ResolveUsersRecordsArgs {
+export class UserWishBooksArgs {
   @Field(() => Int, {nullable: true, defaultValue: 0})
   skip!: number;
 
   @Field(() => Int, {nullable: true, defaultValue: 0})
   limit!: number;
 
-  @Field(() => ResolveUsersRecordsArgsOrderBy, {
+  @Field(() => UserWishBooksArgsOrderBy, {
     nullable: true,
-    defaultValue: new ResolveUsersRecordsArgsOrderBy(),
+    defaultValue: new UserWishBooksArgsOrderBy(),
   })
-  orderBy!: ResolveUsersRecordsArgsOrderBy;
+  orderBy!: UserWishBooksArgsOrderBy;
 }
 
-@ObjectType('UsersRecordsReturn')
-export class ResolveUsersRecordsReturnEntity {
-  @Field(() => [RecordEntity])
-  nodes!: RecordEntity[];
+@ObjectType()
+export class UserWishBooksReturnType {
+  @Field(() => [WishBookRecordEntity])
+  nodes!: WishBookRecordEntity[];
 
   @Field(() => Int)
   count!: number;

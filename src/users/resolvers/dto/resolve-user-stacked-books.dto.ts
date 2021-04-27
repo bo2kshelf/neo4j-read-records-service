@@ -2,29 +2,29 @@ import {ArgsType, Field, InputType, Int, ObjectType} from '@nestjs/graphql';
 import {OrderBy} from '../../../common/order-by.enum';
 import {StackedBookRecordEntity} from '../../entities/stacked-book-record.entity';
 
-@InputType('UsersStackedBooksArgsOrderBy')
-export class ResolveUsersStackedBooksArgsOrderBy {
+@InputType()
+export class UserStackedBooksArgsOrderBy {
   @Field(() => OrderBy, {nullable: true, defaultValue: OrderBy.DESC})
   updatedAt!: OrderBy;
 }
 
 @ArgsType()
-export class ResolveUsersStackedBooksArgs {
+export class UserStackedBooksArgs {
   @Field(() => Int, {nullable: true, defaultValue: 0})
   skip!: number;
 
   @Field(() => Int, {nullable: true, defaultValue: 0})
   limit!: number;
 
-  @Field(() => ResolveUsersStackedBooksArgsOrderBy, {
+  @Field(() => UserStackedBooksArgsOrderBy, {
     nullable: true,
-    defaultValue: new ResolveUsersStackedBooksArgsOrderBy(),
+    defaultValue: new UserStackedBooksArgsOrderBy(),
   })
-  orderBy!: ResolveUsersStackedBooksArgsOrderBy;
+  orderBy!: UserStackedBooksArgsOrderBy;
 }
 
-@ObjectType('UsersStackedBooksReturn')
-export class ResolveUsersStackedBooksReturnEntity {
+@ObjectType()
+export class UserStackedBooksReturnType {
   @Field(() => [StackedBookRecordEntity])
   nodes!: StackedBookRecordEntity[];
 

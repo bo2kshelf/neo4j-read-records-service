@@ -5,7 +5,7 @@ import {Neo4jService} from '../../neo4j/neo4j.service';
 import {HaveBookRecordEntity} from '../entities/have-book-record.entity';
 import {ReadingBookRecordEntity} from '../entities/reading-book-record.entity';
 import {StackedBookRecordEntity} from '../entities/stacked-book-record.entity';
-import {WishReadBookRecordEntity} from '../entities/wish-read-book-record.entity';
+import {WishBookRecordEntity} from '../entities/wish-read-book-record.entity';
 
 @Injectable()
 export class UsersService {
@@ -128,9 +128,9 @@ export class UsersService {
     count: number;
     hasNext: boolean;
     hasPrevious: boolean;
-    nodes: WishReadBookRecordEntity[];
+    nodes: WishBookRecordEntity[];
   }> {
-    const records: WishReadBookRecordEntity[] = await this.neo4jService
+    const records: WishBookRecordEntity[] = await this.neo4jService
       .read(
         `
         MATCH (u:User {id: $userId})
