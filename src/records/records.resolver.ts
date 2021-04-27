@@ -24,4 +24,9 @@ export class RecordsResolver {
   ): Promise<RecordEntity> {
     return this.recordsService.findById(id);
   }
+
+  @Query(() => [RecordEntity])
+  async allRecords(): Promise<RecordEntity[]> {
+    return this.recordsService.findAll();
+  }
 }

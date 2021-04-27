@@ -10,17 +10,39 @@ export class RecordsService {
 
   async findById(id: string): Promise<RecordEntity> {
     const result = await this.neo4jService.read(
-      `MATCH (n:Record {id: $id}) RETURN n`,
+      `
+      MATCH (r:Record {id: $id})
+      MATCH (u:User)-[:RECORDED]->(r)-[:RECORD_OF]->(b:Book)
+      RETURN r.id AS id, toString(r.readAt) AS readAt, u.id AS userId, b.id AS bookId
+      `,
       {id},
     );
     if (result.records.length === 0) throw new Error('Not Found');
-    return result.records[0].get(0).properties;
+    return {
+      id: result.records[0].get('id'),
+      readAt: result.records[0].get('readAt'),
+      userId: result.records[0].get('userId'),
+      bookId: result.records[0].get('bookId'),
+    };
   }
 
   async findAll(): Promise<RecordEntity[]> {
     return this.neo4jService
-      .read(`MATCH (n:Record) RETURN n`)
-      .then((res) => res.records.map((record) => record.get(0).properties));
+      .read(
+        `
+        MATCH (r:Record)
+        MATCH (u:User)-[:RECORDED]->(r)-[:RECORD_OF]->(b:Book)
+        RETURN r.id AS id, toString(r.readAt) AS readAt, u.id AS userId, b.id AS bookId
+        `,
+      )
+      .then((res) =>
+        res.records.map((record) => ({
+          id: record.get('id'),
+          readAt: record.get('readAt'),
+          userId: record.get('userId'),
+          bookId: record.get('bookId'),
+        })),
+      );
   }
 
   async getRecordsFromUser(
