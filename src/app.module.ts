@@ -1,11 +1,13 @@
 import {Module} from '@nestjs/common';
 import {ConfigModule, ConfigType} from '@nestjs/config';
 import {GraphQLFederationModule} from '@nestjs/graphql';
+import {HaveBooksModule} from './have-books/have-books.module';
 import {Neo4jConfig} from './neo4j/neo4j.config';
 import {Neo4jModule} from './neo4j/neo4j.module';
+import {ReadingBooksModule} from './reading-books/reading-books.module';
 import {RecordsModule} from './records/records.module';
-import {UserRecordsModule} from './users/user-records.module';
-import {UsersModule} from './users/users.module';
+import {StackedBooksModule} from './stacked-books/stacked-books.module';
+import {WishBooksModule} from './wish-books/wish-books.module';
 
 @Module({
   imports: [
@@ -21,8 +23,10 @@ import {UsersModule} from './users/users.module';
         password: config.password,
       }),
     }),
-    UsersModule,
-    UserRecordsModule,
+    HaveBooksModule,
+    ReadingBooksModule,
+    StackedBooksModule,
+    WishBooksModule,
     RecordsModule,
   ],
 })
