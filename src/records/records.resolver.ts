@@ -1,32 +1,32 @@
 import {Args, ID, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql';
 import {BookEntity} from '../books/entities/book.entity';
 import {UserEntity} from '../users/users.entity';
-import {RecordEntity} from './record.entity';
+import {UserRecordEntity} from './record.entity';
 import {RecordsService} from './records.service';
 
-@Resolver(() => RecordEntity)
+@Resolver(() => UserRecordEntity)
 export class RecordsResolver {
   constructor(private readonly recordsService: RecordsService) {}
 
   @ResolveField(() => UserEntity)
-  async user(@Parent() {userId}: RecordEntity): Promise<UserEntity> {
+  async user(@Parent() {userId}: UserRecordEntity): Promise<UserEntity> {
     return {id: userId};
   }
 
   @ResolveField(() => BookEntity)
-  async book(@Parent() {bookId}: RecordEntity): Promise<BookEntity> {
+  async book(@Parent() {bookId}: UserRecordEntity): Promise<BookEntity> {
     return {id: bookId};
   }
 
-  @Query(() => RecordEntity)
+  @Query(() => UserRecordEntity)
   async record(
     @Args('id', {type: () => ID}) id: string,
-  ): Promise<RecordEntity> {
+  ): Promise<UserRecordEntity> {
     return this.recordsService.findById(id);
   }
 
-  @Query(() => [RecordEntity])
-  async allRecords(): Promise<RecordEntity[]> {
+  @Query(() => [UserRecordEntity])
+  async allRecords(): Promise<UserRecordEntity[]> {
     return this.recordsService.findAll();
   }
 }

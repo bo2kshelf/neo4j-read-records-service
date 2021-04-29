@@ -2,17 +2,13 @@ import {Injectable} from '@nestjs/common';
 import {int} from 'neo4j-driver';
 import {OrderBy} from '../common/order-by.enum';
 import {Neo4jService} from '../neo4j/neo4j.service';
-import {PaginateService} from '../paginate/paginate.service';
-import {RecordEntity} from './record.entity';
+import {UserRecordEntity} from './record.entity';
 
 @Injectable()
 export class RecordsService {
-  constructor(
-    private readonly neo4jService: Neo4jService,
-    private readonly paginate: PaginateService,
-  ) {}
+  constructor(private readonly neo4jService: Neo4jService) {}
 
-  async findById(id: string): Promise<RecordEntity> {
+  async findById(id: string): Promise<UserRecordEntity> {
     const result = await this.neo4jService.read(
       `
       MATCH (r:Record {id: $id})
@@ -30,7 +26,7 @@ export class RecordsService {
     };
   }
 
-  async findAll(): Promise<RecordEntity[]> {
+  async findAll(): Promise<UserRecordEntity[]> {
     return this.neo4jService
       .read(
         `
@@ -51,18 +47,10 @@ export class RecordsService {
 
   async getRecordsFromUser(
     userId: string,
-    {
-      skip,
-      limit,
-      orderBy,
-    }: {skip: number; limit: number; orderBy: {readAt: OrderBy}},
-  ): Promise<{
-    count: number;
-    hasNext: boolean;
-    hasPrevious: boolean;
-    nodes: RecordEntity[];
-  }> {
-    const nodes: RecordEntity[] = await this.neo4jService
+    {skip, limit}: {skip: number; limit: number},
+    {orderBy}: {orderBy: {readAt: OrderBy}},
+  ): Promise<{entities: UserRecordEntity[]; meta: {count: number}}> {
+    const entities: UserRecordEntity[] = await this.neo4jService
       .read(
         `
       MATCH (u:User {id: $userId})
@@ -90,24 +78,17 @@ export class RecordsService {
           readAt: record.get('readAt'),
         })),
       );
-    const meta: {
-      count: number;
-      hasNext: boolean;
-      hasPrevious: boolean;
-    } = await this.neo4jService
+    const meta: {count: number} = await this.neo4jService
       .read(
         `
       MATCH p=(:User {id: $userId})-[:RECORDED]->(:Record)
-      WITH count(p) AS count
-      RETURN count, 0 < count AND 0 < $skip AS previous, $skip + $limit < count AS next
+      RETURN count(p) AS count
     `,
         {userId, skip: int(skip), limit: int(limit)},
       )
       .then((result) => ({
         count: result.records[0].get('count').toNumber(),
-        hasNext: result.records[0].get('next'),
-        hasPrevious: result.records[0].get('previous'),
       }));
-    return {nodes, ...meta};
+    return {entities, meta};
   }
 }
