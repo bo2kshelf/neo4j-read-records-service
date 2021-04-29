@@ -19,7 +19,10 @@ export class UsersResolver {
     {orderBy, ...props}: UserHaveBooksArgs,
   ): Promise<UserHaveBookConnection> {
     const params = this.paginate.transformArgsToParameter(props);
-    const {entities, meta} = await this.usersService.getHaveBooks(
+    const {
+      entities,
+      meta,
+    } = await this.usersService.getHaveBooksFromUserId(
       userId,
       this.paginate.getSkipAndLimit(params),
       {orderBy},

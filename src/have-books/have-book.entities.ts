@@ -7,9 +7,6 @@ export class UserHaveBookEntity {
   userId!: string;
   bookId!: string;
 
-  @Field(() => Boolean)
-  have!: boolean;
-
   @Field(() => GraphQLISODateTime)
   updatedAt!: Date;
 }

@@ -8,7 +8,7 @@ import {UserHaveBookEntity} from './have-book.entities';
 export class HaveBooksService {
   constructor(private readonly neo4jService: Neo4jService) {}
 
-  async getHaveBooks(
+  async getHaveBooksFromUserId(
     userId: string,
     {skip, limit}: {skip: number; limit: number},
     {orderBy}: {orderBy: {updatedAt: OrderBy}},
@@ -26,7 +26,6 @@ export class HaveBooksService {
       )
       .then((result) =>
         result.records.map((record) => ({
-          have: true,
           userId: record.get('u'),
           bookId: record.get('b'),
           updatedAt: new Date(record.get('updatedAt')),
