@@ -18,10 +18,15 @@ export class UsersResolver {
     @Args({type: () => UserWishBooksArgs})
     {orderBy, ...props}: UserWishBooksArgs,
   ): Promise<UserWishBooksConnection> {
-    return this.usersService.getWishBooksFromUserId(
+    const params = this.paginate.transformArgsToParameter(props);
+    const {
+      entities,
+      meta,
+    } = await this.usersService.getWishBooksFromUserId(
       userId,
-      this.paginate.paramForResolver(props),
+      this.paginate.getSkipAndLimit(params),
       {orderBy},
     );
+    return this.paginate.transformToConnection(entities, params, meta);
   }
 }
