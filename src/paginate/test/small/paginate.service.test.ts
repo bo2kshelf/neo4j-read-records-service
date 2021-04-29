@@ -23,7 +23,50 @@ describe(PaginateService.name, () => {
     paginateService = module.get<PaginateService>(PaginateService);
   });
 
-  describe('getPagingParameters()', () => {
+  describe('transformArgsToParameter', () => {
+    it('空', () => {
+      const actual = paginateService.transformArgsToParameter({});
+      expect(actual).toStrictEqual({});
+    });
+
+    it('firstのみ', () => {
+      const actual = paginateService.transformArgsToParameter({first: 10});
+      expect(actual).toStrictEqual({first: 10});
+    });
+
+    it('firstが無く，afterのみ', () => {
+      const actual = paginateService.transformArgsToParameter({after: 'x'});
+      expect(actual).toStrictEqual({});
+    });
+
+    it('firstとafter', () => {
+      const actual = paginateService.transformArgsToParameter({
+        first: 10,
+        after: 'x',
+      });
+      expect(actual).toStrictEqual({first: 10, after: 'x'});
+    });
+
+    it('lastのみ', () => {
+      const actual = paginateService.transformArgsToParameter({last: 10});
+      expect(actual).toStrictEqual({last: 10});
+    });
+
+    it('lastが無く，beforeのみ', () => {
+      const actual = paginateService.transformArgsToParameter({before: 'x'});
+      expect(actual).toStrictEqual({});
+    });
+
+    it('lastとbefore', () => {
+      const actual = paginateService.transformArgsToParameter({
+        last: 10,
+        before: 'x',
+      });
+      expect(actual).toStrictEqual({last: 10, before: 'x'});
+    });
+  });
+
+  describe('getSkipAndLimit()', () => {
     beforeEach(() => {
       jest.clearAllMocks();
     });
