@@ -59,8 +59,19 @@ describe(StackedBooksService.name, () => {
         {skip: 0, limit: 3},
         {orderBy: {updatedAt: OrderBy.DESC}},
       );
-      expect(actual.entities).toHaveLength(3);
-      expect(actual.meta).toStrictEqual({count: 3});
+      expect(actual).toStrictEqual({
+        entities: [
+          {
+            bookId: 'book3',
+            userId: 'user1',
+          },
+          {
+            bookId: 'book2',
+            userId: 'user1',
+          },
+        ],
+        meta: {count: 2},
+      });
     });
   });
 });
