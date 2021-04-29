@@ -2,7 +2,7 @@ import {Args, Parent, ResolveField, Resolver} from '@nestjs/graphql';
 import {PaginateService} from '../paginate/paginate.service';
 import {UserEntity} from '../users/users.entity';
 import {UserWishBooksArgs} from './dto/resolve-user-wish-books.dto';
-import {UserWishBooksConnection} from './wish-book.entity';
+import {UserWishBooksConnection} from './wish-book.entities';
 import {WishBooksService} from './wish-books.service';
 
 @Resolver(() => UserEntity)

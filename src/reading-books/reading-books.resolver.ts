@@ -1,7 +1,7 @@
 import {Parent, ResolveField, Resolver} from '@nestjs/graphql';
 import {BookEntity} from '../books/entities/book.entity';
 import {UserEntity} from '../users/users.entity';
-import {UserReadingBookEntity} from './reading-book.entity';
+import {UserReadingBookEntity} from './reading-book.entities';
 
 @Resolver(() => UserReadingBookEntity)
 export class ReadingBooksResolver {

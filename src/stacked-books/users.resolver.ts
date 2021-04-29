@@ -2,7 +2,7 @@ import {Args, Parent, ResolveField, Resolver} from '@nestjs/graphql';
 import {PaginateService} from '../paginate/paginate.service';
 import {UserEntity} from '../users/users.entity';
 import {UserStackedBooksArgs} from './dto/resolve-user-stacked-books.dto';
-import {UserStackedBookConnection} from './stacked-book.entity';
+import {UserStackedBookConnection} from './stacked-book.entities';
 import {StackedBooksService} from './stacked-books.service';
 
 @Resolver(() => UserEntity)

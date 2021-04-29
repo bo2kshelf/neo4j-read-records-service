@@ -2,7 +2,7 @@ import {Injectable} from '@nestjs/common';
 import {int} from 'neo4j-driver';
 import {OrderBy} from '../common/order-by.enum';
 import {Neo4jService} from '../neo4j/neo4j.service';
-import {UserReadingBookEntity} from './reading-book.entity';
+import {UserReadingBookEntity} from './reading-book.entities';
 
 @Injectable()
 export class ReadingBooksService {
