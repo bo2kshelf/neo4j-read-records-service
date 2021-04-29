@@ -1,21 +1,27 @@
 import {Args, Parent, ResolveField, Resolver} from '@nestjs/graphql';
+import {PaginateService} from '../paginate/paginate.service';
 import {UserEntity} from '../users/users.entity';
-import {
-  UserWishBooksArgs,
-  UserWishBooksReturnType,
-} from './dto/resolve-user-wish-books.dto';
+import {UserWishBooksArgs} from './dto/resolve-user-wish-books.dto';
+import {UserWishBooksConnection} from './wish-book.entity';
 import {WishBooksService} from './wish-books.service';
 
 @Resolver(() => UserEntity)
 export class UsersResolver {
-  constructor(private readonly usersService: WishBooksService) {}
+  constructor(
+    private readonly usersService: WishBooksService,
+    private readonly paginate: PaginateService,
+  ) {}
 
-  @ResolveField(() => UserWishBooksReturnType)
+  @ResolveField(() => UserWishBooksConnection)
   async wishBooks(
     @Parent() {id: userId}: UserEntity,
     @Args({type: () => UserWishBooksArgs})
-    args: UserWishBooksArgs,
-  ): Promise<UserWishBooksReturnType> {
-    return this.usersService.getWishesToReadBook(userId, args);
+    {orderBy, ...props}: UserWishBooksArgs,
+  ): Promise<UserWishBooksConnection> {
+    return this.usersService.getWishBooksFromUserId(
+      userId,
+      this.paginate.paramForResolver(props),
+      {orderBy},
+    );
   }
 }

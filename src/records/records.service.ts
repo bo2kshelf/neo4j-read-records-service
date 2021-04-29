@@ -2,11 +2,15 @@ import {Injectable} from '@nestjs/common';
 import {int} from 'neo4j-driver';
 import {OrderBy} from '../common/order-by.enum';
 import {Neo4jService} from '../neo4j/neo4j.service';
+import {PaginateService} from '../paginate/paginate.service';
 import {RecordEntity} from './record.entity';
 
 @Injectable()
 export class RecordsService {
-  constructor(private readonly neo4jService: Neo4jService) {}
+  constructor(
+    private readonly neo4jService: Neo4jService,
+    private readonly paginate: PaginateService,
+  ) {}
 
   async findById(id: string): Promise<RecordEntity> {
     const result = await this.neo4jService.read(
