@@ -2,7 +2,7 @@ import {Injectable} from '@nestjs/common';
 import {int} from 'neo4j-driver';
 import {OrderBy} from '../common/order-by.enum';
 import {Neo4jService} from '../neo4j/neo4j.service';
-import {HaveBookEntity} from './have-book.entity';
+import {UserHaveBookEntity} from './have-book.entity';
 
 @Injectable()
 export class HaveBooksService {
@@ -10,18 +10,10 @@ export class HaveBooksService {
 
   async getHaveBooks(
     userId: string,
-    {
-      skip,
-      limit,
-      orderBy,
-    }: {skip: number; limit: number; orderBy: {updatedAt: OrderBy}},
-  ): Promise<{
-    count: number;
-    hasNext: boolean;
-    hasPrevious: boolean;
-    nodes: HaveBookEntity[];
-  }> {
-    const records: HaveBookEntity[] = await this.neo4jService
+    {skip, limit}: {skip: number; limit: number},
+    {orderBy}: {orderBy: {updatedAt: OrderBy}},
+  ): Promise<{entities: UserHaveBookEntity[]; meta: {count: number}}> {
+    const entities: UserHaveBookEntity[] = await this.neo4jService
       .read(
         `
         MATCH (u:User {id: $userId})
@@ -40,11 +32,7 @@ export class HaveBooksService {
           updatedAt: new Date(record.get('updatedAt')),
         })),
       );
-    const meta: {
-      count: number;
-      hasNext: boolean;
-      hasPrevious: boolean;
-    } = await this.neo4jService
+    const meta: {count: number} = await this.neo4jService
       .read(
         `
         MATCH p=(:User {id: $userId})-[r:HAS_BOOK]->()
@@ -55,9 +43,7 @@ export class HaveBooksService {
       )
       .then((result) => ({
         count: result.records[0].get('count').toNumber(),
-        hasNext: result.records[0].get('next'),
-        hasPrevious: result.records[0].get('previous'),
       }));
-    return {nodes: records, ...meta};
+    return {entities, meta};
   }
 }

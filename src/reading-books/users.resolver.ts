@@ -1,21 +1,29 @@
 import {Args, Parent, ResolveField, Resolver} from '@nestjs/graphql';
+import {PaginateService} from '../paginate/paginate.service';
 import {UserEntity} from '../users/users.entity';
-import {
-  UserReadingBooksArgs,
-  UserReadingBooksReturnType,
-} from './dto/resolve-user-reading-books.dto';
+import {UserReadingBooksArgs} from './dto/resolve-user-reading-books.dto';
+import {UserReadingBookConnection} from './reading-book.entity';
 import {ReadingBooksService} from './reading-books.service';
 
 @Resolver(() => UserEntity)
 export class UsersResolver {
-  constructor(private readonly usersService: ReadingBooksService) {}
+  constructor(
+    private readonly usersService: ReadingBooksService,
+    private readonly paginate: PaginateService,
+  ) {}
 
-  @ResolveField(() => UserReadingBooksReturnType)
+  @ResolveField(() => UserReadingBookConnection)
   async readingBooks(
     @Parent() {id: userId}: UserEntity,
     @Args({type: () => UserReadingBooksArgs})
-    args: UserReadingBooksArgs,
-  ): Promise<UserReadingBooksReturnType> {
-    return this.usersService.getReadingBooks(userId, args);
+    {orderBy, ...props}: UserReadingBooksArgs,
+  ): Promise<UserReadingBookConnection> {
+    const params = this.paginate.transformArgsToParameter(props);
+    const {entities, meta} = await this.usersService.getReadingBooks(
+      userId,
+      this.paginate.getSkipAndLimit(params),
+      {orderBy},
+    );
+    return this.paginate.transformToConnection(entities, params, meta);
   }
 }

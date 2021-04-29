@@ -12,7 +12,7 @@ export class WishBooksService {
     userId: string,
     {skip, limit}: {skip: number; limit: number},
     {orderBy}: {orderBy: {updatedAt: OrderBy}},
-  ) {
+  ): Promise<{entities: UserWishBookEntity[]; meta: {count: number}}> {
     const entities: UserWishBookEntity[] = await this.neo4jService
       .read(
         `
@@ -36,8 +36,7 @@ export class WishBooksService {
       .read(
         `
         MATCH p=(:User {id: $userId})-[r:WISHES_TO_READ_BOOK]->()
-        WITH count(p) AS count
-        RETURN count
+        RETURN count(p) AS count
         `,
         {userId},
       )
