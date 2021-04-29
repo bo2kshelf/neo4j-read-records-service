@@ -19,7 +19,10 @@ export class UsersResolver {
     {orderBy, ...props}: UserReadingBooksArgs,
   ): Promise<UserReadingBookConnection> {
     const params = this.paginate.transformArgsToParameter(props);
-    const {entities, meta} = await this.usersService.getReadingBooks(
+    const {
+      entities,
+      meta,
+    } = await this.usersService.getReadingBooksFromUserId(
       userId,
       this.paginate.getSkipAndLimit(params),
       {orderBy},

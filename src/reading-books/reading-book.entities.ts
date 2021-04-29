@@ -7,9 +7,6 @@ export class UserReadingBookEntity {
   userId!: string;
   bookId!: string;
 
-  @Field(() => Boolean)
-  reading!: boolean;
-
   @Field(() => GraphQLISODateTime)
   updatedAt!: Date;
 }

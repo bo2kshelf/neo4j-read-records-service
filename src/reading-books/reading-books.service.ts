@@ -8,7 +8,7 @@ import {UserReadingBookEntity} from './reading-book.entities';
 export class ReadingBooksService {
   constructor(private readonly neo4jService: Neo4jService) {}
 
-  async getReadingBooks(
+  async getReadingBooksFromUserId(
     userId: string,
     {skip, limit}: {skip: number; limit: number},
     {orderBy}: {orderBy: {updatedAt: OrderBy}},
@@ -26,7 +26,6 @@ export class ReadingBooksService {
       )
       .then((result) =>
         result.records.map((record) => ({
-          reading: true,
           userId: record.get('u'),
           bookId: record.get('b'),
           updatedAt: new Date(record.get('updatedAt')),
