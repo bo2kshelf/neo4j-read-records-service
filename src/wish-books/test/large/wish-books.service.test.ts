@@ -48,9 +48,9 @@ describe(WishBooksService.name, () => {
           CREATE (b1:Book {id: "book1"})
           CREATE (b2:Book {id: "book2"})
           CREATE (b3:Book {id: "book3"})
-          CREATE (u)-[r1:WISHES_TO_READ_BOOK {updateAt: "2020-01-01T00:00:00.0000000Z"}]->(b1)
-          CREATE (u)-[r2:WISHES_TO_READ_BOOK {updateAt: "2020-01-02T00:00:00.0000000Z"}]->(b2)
-          CREATE (u)-[r3:WISHES_TO_READ_BOOK {updateAt: "2020-01-03T00:00:00.0000000Z"}]->(b3)
+          CREATE (u)-[r1:WISHES_TO_READ_BOOK {updatedAt: datetime("2000-01-01T00:00:00.000Z")}]->(b1)
+          CREATE (u)-[r2:WISHES_TO_READ_BOOK {updatedAt: datetime("2000-01-02T00:00:00.000Z")}]->(b2)
+          CREATE (u)-[r3:WISHES_TO_READ_BOOK {updatedAt: datetime("2000-01-03T00:00:00.000Z")}]->(b3)
           RETURN *
           `,
         );
@@ -59,77 +59,7 @@ describe(WishBooksService.name, () => {
       it.each([
         [
           {skip: 0, limit: 0},
-          {orderBy: {updatedAt: OrderBy.ASC}},
-          {
-            entities: [],
-            meta: {count: 3},
-          },
-        ],
-        [
-          {skip: 0, limit: 3},
-          {orderBy: {updatedAt: OrderBy.ASC}},
-          {
-            entities: [
-              {
-                userId: 'user1',
-                bookId: 'book3',
-                updatedAt: expect.any(Date),
-              },
-              {
-                userId: 'user1',
-                bookId: 'book2',
-                updatedAt: expect.any(Date),
-              },
-              {
-                userId: 'user1',
-                bookId: 'book1',
-                updatedAt: expect.any(Date),
-              },
-            ],
-            meta: {count: 3},
-          },
-        ],
-        [
-          {skip: 0, limit: 6},
-          {orderBy: {updatedAt: OrderBy.ASC}},
-          {
-            entities: [
-              {
-                userId: 'user1',
-                bookId: 'book3',
-                updatedAt: expect.any(Date),
-              },
-              {
-                userId: 'user1',
-                bookId: 'book2',
-                updatedAt: expect.any(Date),
-              },
-              {
-                userId: 'user1',
-                bookId: 'book1',
-                updatedAt: expect.any(Date),
-              },
-            ],
-            meta: {count: 3},
-          },
-        ],
-        [
-          {skip: 0, limit: 1},
-          {orderBy: {updatedAt: OrderBy.ASC}},
-          {
-            entities: [
-              {
-                userId: 'user1',
-                bookId: 'book3',
-                updatedAt: expect.any(Date),
-              },
-            ],
-            meta: {count: 3},
-          },
-        ],
-        [
-          {skip: 3, limit: 3},
-          {orderBy: {updatedAt: OrderBy.ASC}},
+          {orderBy: {updatedAt: OrderBy.DESC}},
           {
             entities: [],
             meta: {count: 3},
@@ -143,17 +73,87 @@ describe(WishBooksService.name, () => {
               {
                 userId: 'user1',
                 bookId: 'book3',
-                updatedAt: expect.any(Date),
+                updatedAt: new Date('2000-01-03T00:00:00.000Z'),
               },
               {
                 userId: 'user1',
                 bookId: 'book2',
-                updatedAt: expect.any(Date),
+                updatedAt: new Date('2000-01-02T00:00:00.000Z'),
               },
               {
                 userId: 'user1',
                 bookId: 'book1',
-                updatedAt: expect.any(Date),
+                updatedAt: new Date('2000-01-01T00:00:00.000Z'),
+              },
+            ],
+            meta: {count: 3},
+          },
+        ],
+        [
+          {skip: 0, limit: 6},
+          {orderBy: {updatedAt: OrderBy.DESC}},
+          {
+            entities: [
+              {
+                userId: 'user1',
+                bookId: 'book3',
+                updatedAt: new Date('2000-01-03T00:00:00.000Z'),
+              },
+              {
+                userId: 'user1',
+                bookId: 'book2',
+                updatedAt: new Date('2000-01-02T00:00:00.000Z'),
+              },
+              {
+                userId: 'user1',
+                bookId: 'book1',
+                updatedAt: new Date('2000-01-01T00:00:00.000Z'),
+              },
+            ],
+            meta: {count: 3},
+          },
+        ],
+        [
+          {skip: 0, limit: 1},
+          {orderBy: {updatedAt: OrderBy.DESC}},
+          {
+            entities: [
+              {
+                userId: 'user1',
+                bookId: 'book3',
+                updatedAt: new Date('2000-01-03T00:00:00.000Z'),
+              },
+            ],
+            meta: {count: 3},
+          },
+        ],
+        [
+          {skip: 3, limit: 3},
+          {orderBy: {updatedAt: OrderBy.DESC}},
+          {
+            entities: [],
+            meta: {count: 3},
+          },
+        ],
+        [
+          {skip: 0, limit: 3},
+          {orderBy: {updatedAt: OrderBy.ASC}},
+          {
+            entities: [
+              {
+                userId: 'user1',
+                bookId: 'book1',
+                updatedAt: new Date('2000-01-01T00:00:00.000Z'),
+              },
+              {
+                userId: 'user1',
+                bookId: 'book2',
+                updatedAt: new Date('2000-01-02T00:00:00.000Z'),
+              },
+              {
+                userId: 'user1',
+                bookId: 'book3',
+                updatedAt: new Date('2000-01-03T00:00:00.000Z'),
               },
             ],
             meta: {count: 3},
