@@ -22,7 +22,7 @@ export class UsersResolver {
     const {
       entities,
       meta,
-    } = await this.recordsService.getRecordsFromUser(
+    } = await this.recordsService.getRecordsFromUserId(
       userId,
       this.paginate.getSkipAndLimit(params),
       {orderBy},

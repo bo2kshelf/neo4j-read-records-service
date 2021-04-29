@@ -97,7 +97,7 @@ describe(RecordsService.name, () => {
     });
   });
 
-  describe('getRecordsFromUser()', () => {
+  describe('getRecordsFromUserId()', () => {
     beforeEach(async () => {
       await neo4jService.write(
         `
@@ -215,7 +215,7 @@ describe(RecordsService.name, () => {
         },
       ],
     ])('正常な動作 %j %j', async (offset, params, expected) => {
-      const actual = await recordsService.getRecordsFromUser(
+      const actual = await recordsService.getRecordsFromUserId(
         'user1',
         offset,
         params,

@@ -45,7 +45,7 @@ export class RecordsService {
       );
   }
 
-  async getRecordsFromUser(
+  async getRecordsFromUserId(
     userId: string,
     {skip, limit}: {skip: number; limit: number},
     {orderBy}: {orderBy: {readAt: OrderBy}},
