@@ -49,10 +49,11 @@ export class PaginateService {
     node: T[],
     args: PaginateParameter,
     {count}: {count: number},
+    {skip}: {skip: number},
   ) {
     const connection = Relay.connectionFromArraySlice(node, args, {
       arrayLength: count,
-      sliceStart: 0,
+      sliceStart: skip,
     });
     return {...connection, totalCount: count};
   }

@@ -19,14 +19,11 @@ export class UsersResolver {
     {orderBy, ...props}: UserReadBooksArgs,
   ): Promise<UserReadBookConnection> {
     const params = this.paginate.transformArgsToParameter(props);
+    const offset = this.paginate.getSkipAndLimit(params);
     const {
       entities,
       meta,
-    } = await this.usersService.getReadBooksFromUser(
-      userId,
-      this.paginate.getSkipAndLimit(params),
-      {orderBy},
-    );
-    return this.paginate.transformToConnection(entities, params, meta);
+    } = await this.usersService.getReadBooksFromUser(userId, offset, {orderBy});
+    return this.paginate.transformToConnection(entities, params, meta, offset);
   }
 }
