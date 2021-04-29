@@ -12,7 +12,7 @@ export type PaginateParameter =
 export class PaginateService {
   constructor() {}
 
-  paramForResolver(props: {
+  transformArgsToParameter(props: {
     first?: number;
     after?: Relay.ConnectionCursor;
     last?: number;
@@ -29,7 +29,7 @@ export class PaginateService {
     else return {};
   }
 
-  getPagingParameters(args: PaginateParameter): {limit: number; skip: number} {
+  getSkipAndLimit(args: PaginateParameter): {limit: number; skip: number} {
     if ('first' in args) {
       return {
         limit: args.first,
@@ -45,7 +45,11 @@ export class PaginateService {
     } else return {limit: 0, skip: 0};
   }
 
-  transform<T>(node: T[], args: PaginateParameter, {count}: {count: number}) {
+  transformToConnection<T>(
+    node: T[],
+    args: PaginateParameter,
+    {count}: {count: number},
+  ) {
     const connection = Relay.connectionFromArraySlice(node, args, {
       arrayLength: count,
       sliceStart: 0,

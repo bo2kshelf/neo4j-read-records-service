@@ -39,7 +39,7 @@ describe(StackedBooksService.name, () => {
     expect(usersService).toBeDefined();
   });
 
-  describe('getStackedBooks()', () => {
+  describe('getStackedBooksFromUserId()', () => {
     it('READ_BOOKが混ざっている状況', async () => {
       await neo4jService.write(
         `
@@ -54,18 +54,13 @@ describe(StackedBooksService.name, () => {
         RETURN *
         `,
       );
-      const actual = await usersService.getStackedBooks('user1', {
-        skip: 0,
-        limit: 3,
-        orderBy: {updatedAt: OrderBy.DESC},
-      });
-      expect(actual.hasPrevious).toBe(false);
-      expect(actual.hasNext).toBe(false);
-      expect(actual.count).toBe(2);
-
-      expect(actual.nodes).toHaveLength(2);
-      expect(actual.nodes[0].bookId).toBe('book3');
-      expect(actual.nodes[1].bookId).toBe('book2');
+      const actual = await usersService.getStackedBooksFromUserId(
+        'user1',
+        {skip: 0, limit: 3},
+        {orderBy: {updatedAt: OrderBy.DESC}},
+      );
+      expect(actual.entities).toHaveLength(3);
+      expect(actual.meta).toStrictEqual({count: 3});
     });
   });
 });

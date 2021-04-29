@@ -29,17 +29,17 @@ describe(PaginateService.name, () => {
     });
 
     it('引数が空', () => {
-      const actual = paginateService.getPagingParameters({});
+      const actual = paginateService.getSkipAndLimit({});
       expect(actual).toStrictEqual({limit: 0, skip: 0});
     });
 
     it('firstのみ', () => {
-      const actual = paginateService.getPagingParameters({first: 10});
+      const actual = paginateService.getSkipAndLimit({first: 10});
       expect(actual).toStrictEqual({limit: 10, skip: 0});
     });
 
     it('lastのみ', () => {
-      const actual = paginateService.getPagingParameters({last: 10});
+      const actual = paginateService.getSkipAndLimit({last: 10});
       expect(actual).toStrictEqual({limit: 0, skip: 0});
     });
 
@@ -48,7 +48,7 @@ describe(PaginateService.name, () => {
       (args, expected, mock) => {
         jest.spyOn(Relay, 'cursorToOffset').mockReturnValueOnce(mock);
 
-        const actual = paginateService.getPagingParameters(args);
+        const actual = paginateService.getSkipAndLimit(args);
         expect(actual).toStrictEqual(expected);
       },
     );
@@ -61,7 +61,7 @@ describe(PaginateService.name, () => {
     ])('lastをbeforeを同時指定 %#', (args, expected, mock) => {
       jest.spyOn(Relay, 'cursorToOffset').mockReturnValueOnce(mock);
 
-      const actual = paginateService.getPagingParameters(args);
+      const actual = paginateService.getSkipAndLimit(args);
       expect(actual).toStrictEqual(expected);
     });
   });
