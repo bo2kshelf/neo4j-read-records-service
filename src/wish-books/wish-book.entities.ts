@@ -7,9 +7,6 @@ export class UserWishBookEntity {
   userId!: string;
   bookId!: string;
 
-  @Field(() => Boolean)
-  wish!: boolean;
-
   @Field(() => GraphQLISODateTime)
   updatedAt!: Date;
 }

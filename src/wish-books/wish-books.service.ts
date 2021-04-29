@@ -26,7 +26,6 @@ export class WishBooksService {
       )
       .then((result) =>
         result.records.map((record) => ({
-          wish: true,
           userId: record.get('u'),
           bookId: record.get('b'),
           updatedAt: new Date(record.get('updatedAt')),
