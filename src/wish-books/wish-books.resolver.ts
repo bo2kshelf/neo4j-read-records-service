@@ -1,17 +1,17 @@
 import {Parent, ResolveField, Resolver} from '@nestjs/graphql';
 import {BookEntity} from '../books/entities/book.entity';
 import {UserEntity} from '../users/users.entity';
-import {WishBookEntity} from './wish-book.entity';
+import {UserWishBookEntity} from './wish-book.entities';
 
-@Resolver(() => WishBookEntity)
+@Resolver(() => UserWishBookEntity)
 export class WishBooksResolver {
   @ResolveField(() => UserEntity)
-  async user(@Parent() {userId}: WishBookEntity): Promise<UserEntity> {
+  async user(@Parent() {userId}: UserWishBookEntity): Promise<UserEntity> {
     return {id: userId};
   }
 
   @ResolveField(() => BookEntity)
-  async book(@Parent() {bookId}: WishBookEntity): Promise<BookEntity> {
+  async book(@Parent() {bookId}: UserWishBookEntity): Promise<BookEntity> {
     return {id: bookId};
   }
 }

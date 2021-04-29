@@ -39,165 +39,134 @@ describe(WishBooksService.name, () => {
     expect(usersService).toBeDefined();
   });
 
-  describe('getWishesToReadBook()', () => {
+  describe('getWishBooksFromUserId()', () => {
     describe('一般的な場合', () => {
-      const expectedUser = {id: 'user1'};
-      const expectedBooks = [{id: 'book1'}, {id: 'book2'}, {id: 'book3'}];
-      const expectedRecords = [
-        {
-          userId: expectedUser.id,
-          bookId: expectedBooks[0].id,
-          updatedAt: '2020-01-01T00:00:00.000000000Z',
-          wish: true,
-        },
-        {
-          userId: expectedUser.id,
-          bookId: expectedBooks[1].id,
-          updatedAt: '2020-01-02T00:00:00.000000000Z',
-          wish: true,
-        },
-        {
-          userId: expectedUser.id,
-          bookId: expectedBooks[2].id,
-          updatedAt: '2020-01-03T00:00:00.000000000Z',
-          wish: true,
-        },
-      ];
-
       beforeEach(async () => {
-        await Promise.all(
-          expectedRecords.map(({userId, bookId, ...props}) =>
-            neo4jService.write(
-              `
-                MERGE (u:User {id: $userId})-[r:WISHES_TO_READ_BOOK]->(b:Book {id: $bookId})
-                SET r=$props
-                RETURN *
-                `,
-              {userId, bookId, props},
-            ),
-          ),
+        await neo4jService.write(
+          `
+          CREATE (u:User {id: "user1"})
+          CREATE (b1:Book {id: "book1"})
+          CREATE (b2:Book {id: "book2"})
+          CREATE (b3:Book {id: "book3"})
+          CREATE (u)-[r1:WISHES_TO_READ_BOOK {updatedAt: datetime("2000-01-01T00:00:00.000Z")}]->(b1)
+          CREATE (u)-[r2:WISHES_TO_READ_BOOK {updatedAt: datetime("2000-01-02T00:00:00.000Z")}]->(b2)
+          CREATE (u)-[r3:WISHES_TO_READ_BOOK {updatedAt: datetime("2000-01-03T00:00:00.000Z")}]->(b3)
+          RETURN *
+          `,
         );
       });
 
       it.each([
         [
-          {skip: 0, limit: 0, orderBy: {updatedAt: OrderBy.ASC}},
+          {skip: 0, limit: 0},
+          {orderBy: {updatedAt: OrderBy.DESC}},
           {
-            count: 3,
-            hasPrevious: false,
-            hasNext: true,
-            nodes: [],
+            entities: [],
+            meta: {count: 3},
           },
         ],
         [
-          {skip: 0, limit: 3, orderBy: {updatedAt: OrderBy.ASC}},
+          {skip: 0, limit: 3},
+          {orderBy: {updatedAt: OrderBy.DESC}},
           {
-            count: 3,
-            hasPrevious: false,
-            hasNext: false,
-            nodes: [
+            entities: [
               {
-                wish: true,
-                userId: expectedUser.id,
-                bookId: expectedBooks[0].id,
+                userId: 'user1',
+                bookId: 'book3',
+                updatedAt: new Date('2000-01-03T00:00:00.000Z'),
               },
               {
-                wish: true,
-                userId: expectedUser.id,
-                bookId: expectedBooks[1].id,
+                userId: 'user1',
+                bookId: 'book2',
+                updatedAt: new Date('2000-01-02T00:00:00.000Z'),
               },
               {
-                wish: true,
-                userId: expectedUser.id,
-                bookId: expectedBooks[2].id,
+                userId: 'user1',
+                bookId: 'book1',
+                updatedAt: new Date('2000-01-01T00:00:00.000Z'),
               },
             ],
+            meta: {count: 3},
           },
         ],
         [
-          {skip: 0, limit: 6, orderBy: {updatedAt: OrderBy.ASC}},
+          {skip: 0, limit: 6},
+          {orderBy: {updatedAt: OrderBy.DESC}},
           {
-            count: 3,
-            hasPrevious: false,
-            hasNext: false,
-            nodes: [
+            entities: [
               {
-                wish: true,
-                userId: expectedUser.id,
-                bookId: expectedBooks[0].id,
+                userId: 'user1',
+                bookId: 'book3',
+                updatedAt: new Date('2000-01-03T00:00:00.000Z'),
               },
               {
-                wish: true,
-                userId: expectedUser.id,
-                bookId: expectedBooks[1].id,
+                userId: 'user1',
+                bookId: 'book2',
+                updatedAt: new Date('2000-01-02T00:00:00.000Z'),
               },
               {
-                wish: true,
-                userId: expectedUser.id,
-                bookId: expectedBooks[2].id,
+                userId: 'user1',
+                bookId: 'book1',
+                updatedAt: new Date('2000-01-01T00:00:00.000Z'),
               },
             ],
+            meta: {count: 3},
           },
         ],
         [
-          {skip: 1, limit: 1, orderBy: {updatedAt: OrderBy.ASC}},
+          {skip: 0, limit: 1},
+          {orderBy: {updatedAt: OrderBy.DESC}},
           {
-            count: 3,
-            hasPrevious: true,
-            hasNext: true,
-            nodes: [
+            entities: [
               {
-                wish: true,
-                userId: expectedUser.id,
-                bookId: expectedBooks[1].id,
+                userId: 'user1',
+                bookId: 'book3',
+                updatedAt: new Date('2000-01-03T00:00:00.000Z'),
               },
             ],
+            meta: {count: 3},
           },
         ],
         [
-          {skip: 3, limit: 3, orderBy: {updatedAt: OrderBy.ASC}},
+          {skip: 3, limit: 3},
+          {orderBy: {updatedAt: OrderBy.DESC}},
           {
-            count: 3,
-            hasPrevious: true,
-            hasNext: false,
-            nodes: [],
+            entities: [],
+            meta: {count: 3},
           },
         ],
         [
-          {skip: 0, limit: 3, orderBy: {updatedAt: OrderBy.DESC}},
+          {skip: 0, limit: 3},
+          {orderBy: {updatedAt: OrderBy.ASC}},
           {
-            count: 3,
-            hasPrevious: false,
-            hasNext: false,
-            nodes: [
+            entities: [
               {
-                wish: true,
-                userId: expectedUser.id,
-                bookId: expectedBooks[2].id,
+                userId: 'user1',
+                bookId: 'book1',
+                updatedAt: new Date('2000-01-01T00:00:00.000Z'),
               },
               {
-                wish: true,
-                userId: expectedUser.id,
-                bookId: expectedBooks[1].id,
+                userId: 'user1',
+                bookId: 'book2',
+                updatedAt: new Date('2000-01-02T00:00:00.000Z'),
               },
               {
-                wish: true,
-                userId: expectedUser.id,
-                bookId: expectedBooks[0].id,
+                userId: 'user1',
+                bookId: 'book3',
+                updatedAt: new Date('2000-01-03T00:00:00.000Z'),
               },
             ],
+            meta: {count: 3},
           },
         ],
-      ])('正常な動作 %j', async (props, expected) => {
-        const actual = await usersService.getWishesToReadBook(
-          expectedUser.id,
-          props,
+      ])('正常な動作 %j %j', async (offset, params, expected) => {
+        const actual = await usersService.getWishBooksFromUserId(
+          'user1',
+          offset,
+          params,
         );
 
-        expect(actual.count).toBe(expected.count);
-        expect(actual.hasPrevious).toBe(expected.hasPrevious);
-        expect(actual.hasNext).toBe(expected.hasNext);
-        expect(actual.nodes).toHaveLength(expected.nodes.length);
+        expect(actual).toStrictEqual(expected);
       });
     });
   });

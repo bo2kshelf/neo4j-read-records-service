@@ -59,93 +59,95 @@ describe(ReadBooksService.name, () => {
         {
           skip: 0,
           limit: 0,
+        },
+        {
           orderBy: {title: OrderBy.ASC},
         },
         {
-          books: [],
-          hasPrevious: false,
-          hasNext: true,
+          entities: [],
+          meta: {count: 3},
         },
       ],
       [
         {
           skip: 0,
           limit: 3,
+        },
+        {
           orderBy: {title: OrderBy.ASC},
         },
         {
-          books: [
+          entities: [
             {userId: 'user1', bookId: 'book1'},
             {userId: 'user1', bookId: 'book2'},
             {userId: 'user1', bookId: 'book3'},
           ],
-          hasPrevious: false,
-          hasNext: false,
+          meta: {count: 3},
         },
       ],
       [
         {
           skip: 0,
           limit: 3,
+        },
+        {
           orderBy: {title: OrderBy.DESC},
         },
         {
-          books: [
+          entities: [
             {userId: 'user1', bookId: 'book3'},
             {userId: 'user1', bookId: 'book2'},
             {userId: 'user1', bookId: 'book1'},
           ],
-          hasPrevious: false,
-          hasNext: false,
+          meta: {count: 3},
         },
       ],
       [
         {
           skip: 0,
           limit: 1,
+        },
+        {
           orderBy: {title: OrderBy.ASC},
         },
         {
-          books: [{userId: 'user1', bookId: 'book1'}],
-          hasPrevious: false,
-          hasNext: true,
+          entities: [{userId: 'user1', bookId: 'book1'}],
+          meta: {count: 3},
         },
       ],
       [
         {
           skip: 1,
           limit: 1,
+        },
+        {
           orderBy: {title: OrderBy.ASC},
         },
         {
-          books: [{userId: 'user1', bookId: 'book2'}],
-          hasPrevious: true,
-          hasNext: true,
+          entities: [{userId: 'user1', bookId: 'book2'}],
+          meta: {count: 3},
         },
       ],
       [
         {
           skip: 3,
           limit: 3,
+        },
+        {
           orderBy: {title: OrderBy.ASC},
         },
         {
-          books: [],
-          hasPrevious: true,
-          hasNext: false,
+          entities: [],
+          meta: {count: 3},
         },
       ],
-    ])('正常な動作 %j', async (props, expected) => {
-      const actual = await recordsService.getReadBooksFromUser('user1', props);
-
-      expect(actual.hasPrevious).toBe(expected.hasPrevious);
-      expect(actual.hasNext).toBe(expected.hasNext);
-      expect(actual.count).toBe(3);
-
-      expect(actual.nodes).toHaveLength(expected.books.length);
-      for (const [i, actualNode] of actual.nodes.entries()) {
-        expect(actualNode).toStrictEqual(expected.books[i]);
-      }
+    ])('正常な動作 %j', async (offset, params, expected) => {
+      const actual = await recordsService.getReadBooksFromUser(
+        'user1',
+        offset,
+        params,
+      );
+      expect(actual).toStrictEqual(expected);
     });
   });
 });

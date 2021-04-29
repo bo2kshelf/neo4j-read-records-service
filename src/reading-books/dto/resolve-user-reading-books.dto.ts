@@ -1,6 +1,7 @@
-import {ArgsType, Field, InputType, Int, ObjectType} from '@nestjs/graphql';
+import {ArgsType, Field, InputType, Int} from '@nestjs/graphql';
+import {Min} from 'class-validator';
+import * as Relay from 'graphql-relay';
 import {OrderBy} from '../../common/order-by.enum';
-import {ReadingBookEntity} from '../reading-book.entity';
 
 @InputType()
 export class UserReadingBooksArgsOrderBy {
@@ -10,30 +11,23 @@ export class UserReadingBooksArgsOrderBy {
 
 @ArgsType()
 export class UserReadingBooksArgs {
-  @Field(() => Int, {nullable: true, defaultValue: 0})
-  skip!: number;
+  @Field((_type) => String, {nullable: true})
+  after?: Relay.ConnectionCursor;
 
-  @Field(() => Int, {nullable: true, defaultValue: 0})
-  limit!: number;
+  @Field((_type) => Int, {nullable: true})
+  @Min(1)
+  first?: number;
+
+  @Field((_type) => String, {nullable: true})
+  before?: Relay.ConnectionCursor;
+
+  @Field((_type) => Int, {nullable: true})
+  @Min(1)
+  last?: number;
 
   @Field(() => UserReadingBooksArgsOrderBy, {
     nullable: true,
     defaultValue: new UserReadingBooksArgsOrderBy(),
   })
   orderBy!: UserReadingBooksArgsOrderBy;
-}
-
-@ObjectType()
-export class UserReadingBooksReturnType {
-  @Field(() => [ReadingBookEntity])
-  nodes!: ReadingBookEntity[];
-
-  @Field(() => Int)
-  count!: number;
-
-  @Field(() => Boolean)
-  hasPrevious!: boolean;
-
-  @Field(() => Boolean)
-  hasNext!: boolean;
 }
