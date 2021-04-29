@@ -115,25 +115,19 @@ describe(RecordsService.name, () => {
 
     it.each([
       [
+        {skip: 0, limit: 0},
+        {orderBy: {readAt: OrderBy.ASC}},
         {
-          skip: 0,
-          limit: 0,
-          orderBy: {readAt: OrderBy.ASC},
-        },
-        {
-          records: [],
-          hasPrevious: false,
-          hasNext: true,
+          meta: {count: 3},
+          entities: [],
         },
       ],
       [
+        {skip: 0, limit: 3},
+        {orderBy: {readAt: OrderBy.ASC}},
         {
-          skip: 0,
-          limit: 3,
-          orderBy: {readAt: OrderBy.ASC},
-        },
-        {
-          records: [
+          meta: {count: 3},
+          entities: [
             {
               id: 'record1',
               userId: 'user1',
@@ -153,18 +147,14 @@ describe(RecordsService.name, () => {
               readAt: '2020-01-03',
             },
           ],
-          hasPrevious: false,
-          hasNext: false,
         },
       ],
       [
+        {skip: 0, limit: 3},
+        {orderBy: {readAt: OrderBy.DESC}},
         {
-          skip: 0,
-          limit: 3,
-          orderBy: {readAt: OrderBy.DESC},
-        },
-        {
-          records: [
+          meta: {count: 3},
+          entities: [
             {
               id: 'record3',
               userId: 'user1',
@@ -184,18 +174,14 @@ describe(RecordsService.name, () => {
               readAt: '2020-01-01',
             },
           ],
-          hasPrevious: false,
-          hasNext: false,
         },
       ],
       [
+        {skip: 0, limit: 1},
+        {orderBy: {readAt: OrderBy.ASC}},
         {
-          skip: 0,
-          limit: 1,
-          orderBy: {readAt: OrderBy.ASC},
-        },
-        {
-          records: [
+          meta: {count: 3},
+          entities: [
             {
               id: 'record1',
               userId: 'user1',
@@ -203,18 +189,14 @@ describe(RecordsService.name, () => {
               readAt: '2020-01-01',
             },
           ],
-          hasPrevious: false,
-          hasNext: true,
         },
       ],
       [
+        {skip: 1, limit: 1},
+        {orderBy: {readAt: OrderBy.ASC}},
         {
-          skip: 1,
-          limit: 1,
-          orderBy: {readAt: OrderBy.ASC},
-        },
-        {
-          records: [
+          meta: {count: 3},
+          entities: [
             {
               id: 'record2',
               userId: 'user1',
@@ -222,33 +204,23 @@ describe(RecordsService.name, () => {
               readAt: '2020-01-02',
             },
           ],
-          hasPrevious: true,
-          hasNext: true,
         },
       ],
       [
+        {skip: 3, limit: 3},
+        {orderBy: {readAt: OrderBy.ASC}},
         {
-          skip: 3,
-          limit: 3,
-          orderBy: {readAt: OrderBy.ASC},
-        },
-        {
-          records: [],
-          hasPrevious: true,
-          hasNext: false,
+          meta: {count: 3},
+          entities: [],
         },
       ],
-    ])('正常な動作 %j', async (props, expected) => {
-      const actual = await recordsService.getRecordsFromUser('user1', props);
-
-      expect(actual.hasPrevious).toBe(expected.hasPrevious);
-      expect(actual.hasNext).toBe(expected.hasNext);
-      expect(actual.count).toBe(3);
-
-      expect(actual.nodes).toHaveLength(expected.records.length);
-      for (const [i, actualRecord] of actual.nodes.entries()) {
-        expect(actualRecord).toStrictEqual(expected.records[i]);
-      }
+    ])('正常な動作 %j %j', async (offset, params, expected) => {
+      const actual = await recordsService.getRecordsFromUser(
+        'user1',
+        offset,
+        params,
+      );
+      expect(actual).toStrictEqual(expected);
     });
   });
 });
